@@ -57,12 +57,15 @@ public class BotsController {
         Vector2 v1;
 
         for (Bot bot : bots) {
-            v1 = cohesion(bot);
 
-            float x = bot.getGoal().getBody().getLinearVelocity().x + v1.x;
-            float y = bot.getGoal().getBody().getLinearVelocity().y + v1.y;
+            if(bot.getGoal() != null) {
+                v1 = cohesion(bot);
 
-            bot.getBody().setLinearVelocity(x,y);
+                float x = bot.getGoal().getBody().getLinearVelocity().x + v1.x;
+                float y = bot.getGoal().getBody().getLinearVelocity().y + v1.y;
+
+                bot.getBody().setLinearVelocity(x, y);
+            }
         }
 
     }
@@ -87,7 +90,9 @@ public class BotsController {
                 bot.setGoal(goals.get(0).getGoal());
             }
             else {
-                System.out.println(bot.getGoal());
+                if(!bot.getGoal().getBody().isActive()) {
+                    bot.setGoal(null);
+                }
             }
         }
     }
