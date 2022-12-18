@@ -19,7 +19,7 @@ public class TowersController {
         this.player = world.getPlayer();
         this.towers = world.getTowers();
 
-        this.animation = new TowersAnimation(6, 0.5f);
+        this.animation = new TowersAnimation(5, 0.5f);
     }
 
     public void update(float dt) {

@@ -22,7 +22,7 @@ public class Bot implements IBot {
     private final Vector2 velocity;
     private float SPEED = 50;
 
-    private long experience;
+    private double experience;
     private Stack<ILevel> levels;
 
     private IActor goal;
@@ -91,14 +91,15 @@ public class Bot implements IBot {
     }
 
     @Override
-    public long getExp() {
+    public double getExp() {
         return this.experience;
     }
 
     @Override
     public ILevel getLevel() {
+
         if(levels.empty()) {
-            levels.add(new Level((long) (experience * 1.01)));
+            levels.add(new Level((double) (experience * 1.05)));
         }
         return levels.peek();
     }
@@ -110,7 +111,7 @@ public class Bot implements IBot {
 
     public void initLevels() {
         this.levels = new Stack<>();
-        levels.add(new Level(50));
+        levels.add(new Level(10));
     }
 
 

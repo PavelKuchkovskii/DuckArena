@@ -19,7 +19,7 @@ public class Player implements IPlayer {
 
     private float SPEED = 50;
 
-    private long experience;
+    private double experience;
     private Stack<ILevel> levels;
 
     private final int WIDTH = 15;
@@ -89,14 +89,14 @@ public class Player implements IPlayer {
     }
 
     @Override
-    public long getExp() {
+    public double getExp() {
         return this.experience;
     }
 
     @Override
     public ILevel getLevel() {
         if(levels.empty()) {
-            levels.add(new Level((long) (experience * 1.2)));
+            levels.add(new Level((double) (experience * 1.05)));
         }
         return levels.peek();
     }

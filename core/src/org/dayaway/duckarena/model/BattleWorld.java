@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 
 import org.dayaway.duckarena.model.api.IActor;
 import org.dayaway.duckarena.model.api.IPlayer;
@@ -70,12 +71,12 @@ public class BattleWorld implements IWorld {
         for (int i = 0; i < 1; i++) {
             createSoldier(player);
         }
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 1; i++) {
             createSoldier(bots.get(0));
         }
 
 
-        for (int i = 0; i < 500; i++) {
+        for (int i = 0; i < 300; i++) {
             createCrystal();
         }
 
@@ -246,6 +247,16 @@ public class BattleWorld implements IWorld {
     @Override
     public List<ISoldier> getSoldiers() {
         return this.soldiers;
+    }
+
+    @Override
+    public boolean isExist(Body body) {
+        //создаем пустой массив
+        Array<Body> bodies = new Array<>();
+        //Получаем в него все Body из мира
+        world.getBodies(bodies);
+
+        return bodies.contains(body, true);
     }
 
     @Override

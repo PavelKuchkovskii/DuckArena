@@ -37,4 +37,6 @@ public interface IWorld {
     void createSoldier(IPlayer player);
 
     List<ISoldier> getSoldiers();
+
+    boolean isExist(Body body);
 }

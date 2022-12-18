@@ -18,7 +18,7 @@ public class SoldiersController{
         this.world = world;
         this.soldiers = world.getSoldiers();
 
-        this.animation = new SoldierAnimation(6, 0.5f);
+        this.animation = new SoldierAnimation(5, 0.5f);
     }
 
     public IWorld getWorld() {

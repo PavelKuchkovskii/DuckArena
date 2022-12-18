@@ -21,7 +21,7 @@ public interface IPlayer extends IActor{
 
     void exp(Body body);
 
-    long getExp();
+    double getExp();
 
     ILevel getLevel();
 

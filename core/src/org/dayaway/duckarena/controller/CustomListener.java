@@ -49,7 +49,7 @@ public class CustomListener implements ContactListener {
         //Если башня сталкивается
         else if(contact.getFixtureA().getUserData() != null && contact.getFixtureA().getUserData().equals("tower")) {
             //С СОЛДАТАМИ
-            if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureA().getUserData()).contains("soldier")) {
+            if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("soldier")) {
                 //Уничтожаем солдата
                 world.addToDestroy(contact.getFixtureB().getBody());
             }

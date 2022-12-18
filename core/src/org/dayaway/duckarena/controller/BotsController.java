@@ -29,6 +29,70 @@ public class BotsController {
         decide();
 
         move();
+
+        expBot();
+    }
+
+    //Проверяем набрал ли Bot достаточно опыта и если да, переводим на след уровень
+    public void expBot() {
+
+        for (Bot bot : bots) {
+
+            if(bot.getExp() >= bot.getLevel().getExp()) {
+                bot.nextLevel();
+
+                world.createSoldier(bot);
+            }
+        }
+
+    }
+
+    private void move() {
+
+        Vector2 v1;
+
+        for (Bot bot : bots) {
+
+            if(bot.getGoal() != null) {
+                v1 = cohesion(bot);
+
+                float x = v1.x;
+                float y = v1.y;
+
+                bot.getBody().setLinearVelocity(x, y);
+            }
+        }
+
+    }
+
+    private Vector2 cohesion(Bot bot) {
+        return bot.getGoal().getPosition().sub(bot.getPosition());
+    }
+
+    private void decide() {
+
+        for (Bot bot : bots) {
+
+            if(bot.getGoal() == null) {
+                List<VectorGoal> goals = new ArrayList<>();
+
+                if(!world.getCrystals().isEmpty()) {
+                    for (Crystal crystal : world.getCrystals()) {
+                        goals.add(new VectorGoal(getVector(bot.getPosition(), crystal.getPosition()), crystal));
+                    }
+
+                    Collections.sort(goals);
+
+                    bot.setGoal(goals.get(0).getGoal());
+                }
+            }
+            else {
+                //Если в мире нет Body цели, то цель равна null
+                if(!world.isExist(bot.getGoal().getBody())) {
+                    bot.setGoal(null);
+                }
+            }
+        }
     }
 
     float getVector(Vector2 vector1, Vector2 vector2) {
@@ -50,51 +114,6 @@ public class BotsController {
         }
 
         return (float) Math.sqrt((leg1 * leg1) + (leg2 * leg2));
-    }
-
-    private void move() {
-
-        Vector2 v1;
-
-        for (Bot bot : bots) {
-
-            if(bot.getGoal() != null) {
-                v1 = cohesion(bot);
-
-                float x = bot.getGoal().getBody().getLinearVelocity().x + v1.x;
-                float y = bot.getGoal().getBody().getLinearVelocity().y + v1.y;
-
-                bot.getBody().setLinearVelocity(x, y);
-            }
-        }
-
-    }
-
-    private Vector2 cohesion(Bot bot) {
-        return bot.getGoal().getPosition().sub(bot.getPosition());
-    }
-
-    private void decide() {
-
-        for (Bot bot : bots) {
-
-            if(bot.getGoal() == null) {
-                List<VectorGoal> goals = new ArrayList<>();
-
-                for (Crystal crystal : world.getCrystals()) {
-                    goals.add(new VectorGoal(getVector(bot.getPosition(), crystal.getPosition()), crystal));
-                }
-
-                Collections.sort(goals);
-
-                bot.setGoal(goals.get(0).getGoal());
-            }
-            else {
-                if(!bot.getGoal().getBody().isActive()) {
-                    bot.setGoal(null);
-                }
-            }
-        }
     }
 
     private class VectorGoal implements Comparable<VectorGoal>{

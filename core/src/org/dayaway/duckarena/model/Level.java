@@ -4,14 +4,14 @@ import org.dayaway.duckarena.model.api.ILevel;
 
 public class Level implements ILevel {
 
-    private final long experience;
+    private final double experience;
 
-    public Level(long experience) {
+    public Level(double experience) {
         this.experience = experience;
     }
 
     @Override
-    public long getExp() {
+    public double getExp() {
         return this.experience;
     }
 }
