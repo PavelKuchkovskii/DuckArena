@@ -82,10 +82,12 @@ public class CustomListener implements ContactListener {
             if(contact.getFixtureA().getUserData() != null && contact.getFixtureA().getUserData().equals("player")){
 
                 //С солдатами или башнями или центром масс бота
-                if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("soldier") ||
-                        contact.getFixtureB().getUserData().equals("tower") || contact.getFixtureB().getUserData().equals("bot")) {
-                    //Отключаем этот контакт
-                    contact.setEnabled(false);
+                if(contact.getFixtureB().getUserData() != null) {
+                    if(((String) contact.getFixtureB().getUserData()).contains("soldier") ||
+                            contact.getFixtureB().getUserData().equals("tower") || contact.getFixtureB().getUserData().equals("bot")) {
+                        //Отключаем этот контакт
+                        contact.setEnabled(false);
+                    }
                 }
             }
 
@@ -93,10 +95,12 @@ public class CustomListener implements ContactListener {
             if(contact.getFixtureA().getUserData() != null && contact.getFixtureA().getUserData().equals("bot")){
 
                 //С солдатами или башнями
-                if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("soldier") ||
-                        contact.getFixtureB().getUserData().equals("tower") || contact.getFixtureB().getUserData().equals("player")) {
-                    //Отключаем этот контакт
-                    contact.setEnabled(false);
+                if(contact.getFixtureB().getUserData() != null) {
+                    if(((String) contact.getFixtureB().getUserData()).contains("soldier") ||
+                            contact.getFixtureB().getUserData().equals("tower") || contact.getFixtureB().getUserData().equals("player")) {
+                        //Отключаем этот контакт
+                        contact.setEnabled(false);
+                    }
                 }
             }
         }

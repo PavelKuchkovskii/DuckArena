@@ -2,11 +2,13 @@ package org.dayaway.duckarena.model.api;
 
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 
 import org.dayaway.duckarena.model.Arena;
 import org.dayaway.duckarena.model.Bot;
 import org.dayaway.duckarena.model.Crystal;
 import org.dayaway.duckarena.model.Tower;
+import org.dayaway.duckarena.model.TrapEdgeMap;
 
 import java.util.List;
 
@@ -20,7 +22,7 @@ public interface IWorld {
 
     List<IActor> getActors();
 
-    List<Arena> getArenas();
+    IActor getArena();
 
     List<Tower> getTowers();
 
@@ -39,4 +41,8 @@ public interface IWorld {
     List<ISoldier> getSoldiers();
 
     boolean isExist(Body body);
+
+    List<TrapEdgeMap> getTraps();
+
+    RevoluteJoint get();
 }

@@ -11,8 +11,8 @@ public class Soldier implements ISoldier {
 
     private final IPlayer player;
 
-    private final int WIDTH = 6;
-    private final int HEIGHT = 6;
+    private final int WIDTH = 7;
+    private final int HEIGHT = 7;
 
     private final Body body;
     private final TextureRegion peaceTexture;

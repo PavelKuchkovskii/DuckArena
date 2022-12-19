@@ -5,10 +5,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 
 import org.dayaway.duckarena.Util.Box2DCustomDebugRenderer;
+import org.dayaway.duckarena.model.TrapEdgeMap;
 import org.dayaway.duckarena.model.api.IActor;
+import org.dayaway.duckarena.model.api.ITrap;
 import org.dayaway.duckarena.model.api.IWorld;
 import org.dayaway.duckarena.view.api.IRenderer;
 
@@ -37,8 +40,8 @@ public class BattleRenderer implements IRenderer {
     public void render(float dt) {
         clearScreen();
 
-        //camera.position.set(world.getPlayer().getPosition().x, world.getPlayer().getPosition().y, 0);
-        camera.position.set(world.getBots().get(0).getPosition().x, world.getBots().get(0).getPosition().y, 0);
+        camera.position.set(world.getPlayer().getPosition().x, world.getPlayer().getPosition().y, 0);
+        //camera.position.set(world.getBots().get(0).getPosition().x, world.getBots().get(0).getPosition().y, 0);
 
         camera.update();
 
@@ -47,8 +50,11 @@ public class BattleRenderer implements IRenderer {
         batch.begin();
         for (IActor actor : world.getActors()) {
             if(actor.getFrame() != null) {
+
                 batch.draw(actor.getFrame(), actor.getPosition().x - actor.getWidth() / 2f, actor.getPosition().y - actor.getHeight() / 2f,
-                        actor.getWidth(), actor.getHeight());
+                actor.getWidth()/2f, actor.getHeight()/2f, actor.getWidth(), actor.getHeight(),
+                1, 1, (float) Math.toDegrees(actor.getBody().getAngle()));
+
             }
         }
 
@@ -59,7 +65,21 @@ public class BattleRenderer implements IRenderer {
         batch.end();
 
         renderer.render(world.getWorld(), camera.combined);
-        world.getWorld().step(1/60f, 6, 1);
+        world.getWorld().step(1/60f, 6, 2);
+
+
+        /*for (TrapEdgeMap trap : world.getTraps()) {
+            if(trap.getJoint().getMotorSpeed() > 0) {
+                if(trap.getJoint().getJointAngle() >= trap.getJoint().getUpperLimit()) {
+                    trap.getJoint().setMotorSpeed((float) Math.toRadians(-360));
+                }
+            }
+            else  {
+                if(trap.getJoint().getJointAngle() <= trap.getJoint().getLowerLimit()) {
+                    trap.getJoint().setMotorSpeed((float) Math.toRadians(360));
+                }
+            }
+        }*/
 
         //System.out.println(Gdx.graphics.getFramesPerSecond());
 
