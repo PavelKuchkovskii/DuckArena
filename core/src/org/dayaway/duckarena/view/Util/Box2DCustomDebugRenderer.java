@@ -1,4 +1,4 @@
-package org.dayaway.duckarena.Util;
+package org.dayaway.duckarena.view.Util;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;

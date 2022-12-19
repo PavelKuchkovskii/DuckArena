@@ -2,9 +2,7 @@ package org.dayaway.duckarena.model.api;
 
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 
-import org.dayaway.duckarena.model.Arena;
 import org.dayaway.duckarena.model.Bot;
 import org.dayaway.duckarena.model.Crystal;
 import org.dayaway.duckarena.model.Tower;
@@ -43,6 +41,4 @@ public interface IWorld {
     boolean isExist(Body body);
 
     List<TrapEdgeMap> getTraps();
-
-    RevoluteJoint get();
 }

@@ -8,7 +8,6 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.badlogic.gdx.utils.Array;
@@ -16,7 +15,6 @@ import com.badlogic.gdx.utils.Array;
 import org.dayaway.duckarena.model.api.IActor;
 import org.dayaway.duckarena.model.api.IPlayer;
 import org.dayaway.duckarena.model.api.ISoldier;
-import org.dayaway.duckarena.model.api.ITrap;
 import org.dayaway.duckarena.model.api.IWorld;
 import org.dayaway.duckarena.screens.BattleScreen;
 
@@ -43,9 +41,6 @@ public class BattleWorld implements IWorld {
     private final List<Tower> towers;
 
     private final List<TrapEdgeMap> trapEdgeMaps;
-
-
-    private RevoluteJoint revoluteJoint;
 
     Random random = new Random();
 
@@ -84,7 +79,7 @@ public class BattleWorld implements IWorld {
         }
 
 
-        for (int i = 0; i < 300; i++) {
+        for (int i = 0; i < 1000; i++) {
             createCrystal();
         }
 
@@ -96,7 +91,7 @@ public class BattleWorld implements IWorld {
     public void createPlayer() {
         BodyDef playerDef = new BodyDef();
         playerDef.type = BodyDef.BodyType.DynamicBody;
-        playerDef.position.set(0, 0);
+        playerDef.position.set(20, 0);
 
         Body playerBody = world.createBody(playerDef);
 
@@ -148,7 +143,7 @@ public class BattleWorld implements IWorld {
     public void createCrystal() {
         BodyDef crystalDef = new BodyDef();
         crystalDef.type = BodyDef.BodyType.StaticBody;
-        crystalDef.position.set(random.nextInt(400)-200, random.nextInt(400)-200);
+        crystalDef.position.set(random.nextInt(800)-400, random.nextInt(800)-400);
 
         Body crystalBody = world.createBody(crystalDef);
         //Создаем новый кристалл
@@ -224,14 +219,79 @@ public class BattleWorld implements IWorld {
 
     public void create() {
 
-        createEdgeTrap(-63, -288, -98, 70);
-        createEdgeTrap(-160, -248, -118, 50);
-        createEdgeTrap(63, 288, -118, 50);
+        createEdgeTrap(445, 30);
+        createCrossTrap(0,0);
+        createCrossTrap(-100,-100);
+        createCrossTrap(100,100);
+    }
 
+    private void createEdgeTrap(float radius, float angleStep) {
+
+        float start = 0;
+
+        for (int i = 0; i < 360/angleStep; i++) {
+
+            float x = (float) (radius * Math.cos(Math.toRadians(start)));
+            float y = (float) (radius * Math.sin(Math.toRadians(start)));
+            start += angleStep;
+
+            BodyDef defCircle = new BodyDef();
+            defCircle.type = BodyDef.BodyType.StaticBody;
+            defCircle.position.set(x, y);
+
+            Body bodyCircle = world.createBody(defCircle);
+
+            CircleShape circleShape = new CircleShape();
+            circleShape.setRadius(2f);
+
+            bodyCircle.createFixture(circleShape, 0);
+
+            circleShape.dispose();
+
+
+            BodyDef defPol = new BodyDef();
+            defPol.type = BodyDef.BodyType.DynamicBody;
+            defPol.position.set(x, y);
+
+            defPol.angle = (float) Math.toRadians(defPol.position.angleDeg() + 90);
+
+            Body bodyPol = world.createBody(defPol);
+
+            PolygonShape pol = new PolygonShape();
+            pol.setAsBox(5, 24);
+
+            FixtureDef fixtureDef = new FixtureDef();
+            fixtureDef.shape = pol;
+            fixtureDef.density = 5f;
+            bodyPol.createFixture(fixtureDef);
+
+            pol.dispose();
+
+
+            RevoluteJointDef jointDef = new RevoluteJointDef();
+            jointDef.bodyA = bodyCircle;
+            jointDef.bodyB = bodyPol;
+            jointDef.localAnchorA.set(0,0);
+            jointDef.localAnchorB.set(0,-24);
+
+            jointDef.referenceAngle = (float) Math.toRadians(start);
+            jointDef.enableLimit = true;
+            jointDef.lowerAngle = (float) Math.toRadians(-20);
+            jointDef.upperAngle = (float) Math.toRadians(145);
+            jointDef.enableMotor = true;
+            jointDef.maxMotorTorque = 5_000_000;
+            jointDef.motorSpeed = (float) Math.toRadians(360);
+
+            this.trapEdgeMaps.add(new TrapEdgeMap( (RevoluteJoint) world.createJoint(jointDef), BattleScreen.trap));
+        }
 
     }
 
-    private void createEdgeTrap(float posX, float posY, float lowerAngle, float upperAngle) {
+    private void createCrossTrap(float posX, float posY) {
+
+        float width = 3f;
+        float height = 30f;
+
         BodyDef defCircle = new BodyDef();
         defCircle.type = BodyDef.BodyType.StaticBody;
         defCircle.position.set(posX, posY);
@@ -241,7 +301,7 @@ public class BattleWorld implements IWorld {
         CircleShape circleShape = new CircleShape();
         circleShape.setRadius(2f);
 
-        bodyCircle.createFixture(circleShape, 100);
+        bodyCircle.createFixture(circleShape, 0);
 
         circleShape.dispose();
 
@@ -249,36 +309,70 @@ public class BattleWorld implements IWorld {
         BodyDef defPol = new BodyDef();
         defPol.type = BodyDef.BodyType.DynamicBody;
         defPol.position.set(posX, posY);
-        defPol.angle = (float) Math.toRadians(-90);
 
         Body bodyPol = world.createBody(defPol);
 
-        PolygonShape pol = new PolygonShape();
-        pol.setAsBox(4, 24);
+        //Создаем первуя часть креста
+        PolygonShape polygonShape = new PolygonShape();
+        //Указываем вершины
+        Vector2[] vertices = new Vector2[4];
+        vertices[0] = new Vector2(-width,width);
+        vertices[1] = new Vector2(-width,height);
+        vertices[2] = new Vector2(width,height);
+        vertices[3] = new Vector2(width,width);
+        polygonShape.set(vertices);
 
+        //Создаем фикстуру
         FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = pol;
-        fixtureDef.density = 0.5f;
+        fixtureDef.shape = polygonShape;
+        fixtureDef.density = 5f;
         bodyPol.createFixture(fixtureDef);
 
-        pol.dispose();
+        //Создаем вторую часть креста
+        vertices[0] = new Vector2(width,width);
+        vertices[1] = new Vector2(height,width);
+        vertices[2] = new Vector2(height,-width);
+        vertices[3] = new Vector2(width,-width);
+
+        polygonShape.set(vertices);
+        fixtureDef.shape = polygonShape;
+        bodyPol.createFixture(fixtureDef);
+
+        //Создаем тертью часть креста
+        vertices[0] = new Vector2(width,-width);
+        vertices[1] = new Vector2(width,-height);
+        vertices[2] = new Vector2(-width,-height);
+        vertices[3] = new Vector2(-width,-width);
+
+        polygonShape.set(vertices);
+        fixtureDef.shape = polygonShape;
+        bodyPol.createFixture(fixtureDef);
+
+        //Создаем четвертую часть креста
+        vertices[0] = new Vector2(-width,-width);
+        vertices[1] = new Vector2(-height,-width);
+        vertices[2] = new Vector2(-height,width);
+        vertices[3] = new Vector2(-width,width);
+
+        polygonShape.set(vertices);
+        fixtureDef.shape = polygonShape;
+        bodyPol.createFixture(fixtureDef);
+
+        polygonShape.dispose();
 
 
         RevoluteJointDef jointDef = new RevoluteJointDef();
         jointDef.bodyA = bodyCircle;
         jointDef.bodyB = bodyPol;
         jointDef.localAnchorA.set(0,0);
-        jointDef.localAnchorB.set(0,-24);
-        /*jointDef.referenceAngle = (float) Math.toRadians(0);
-        jointDef.enableLimit = true;
-        jointDef.lowerAngle = (float) Math.toRadians(lowerAngle);
-        jointDef.upperAngle = (float) Math.toRadians(upperAngle);
+        jointDef.localAnchorB.set(0,0);
+
         jointDef.enableMotor = true;
         jointDef.maxMotorTorque = 5_000_000;
-        jointDef.motorSpeed = (float) Math.toRadians(360);*/
+        jointDef.motorSpeed = (float) Math.toRadians(360);
 
-        this.revoluteJoint = (RevoluteJoint) world.createJoint(jointDef);
-        this.trapEdgeMaps.add(new TrapEdgeMap(revoluteJoint, BattleScreen.trap));
+        this.trapEdgeMaps.add(new TrapCrossMap( (RevoluteJoint) world.createJoint(jointDef), BattleScreen.trap_cross));
+
     }
 
     @Override
@@ -335,11 +429,6 @@ public class BattleWorld implements IWorld {
     }
 
     @Override
-    public RevoluteJoint get() {
-        return this.revoluteJoint;
-    }
-
-    @Override
     public IActor getArena() {
         return this.arena;
     }
@@ -391,7 +480,7 @@ public class BattleWorld implements IWorld {
     }
 
     private void createMap() {
-        final float RADIUS = 300f;
+        final float RADIUS = 450f;
 
         Vector2 circleCentre = new Vector2(0,0);
 
