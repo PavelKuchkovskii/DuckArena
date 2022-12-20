@@ -17,9 +17,8 @@ public class BattleScreen implements IGameScreen {
     private final IRenderer renderer;
     private final IController controller;
     public static final TextureRegion actorPeace = new TextureRegion(new Texture("walk.png"));
-    public static final TextureRegion actorAttack = new TextureRegion(new Texture("attack.png"));
     public static final TextureRegion map = new TextureRegion(new Texture("WB.png"));
-    public static final TextureRegion crystal = new TextureRegion(new Texture("red.png"));
+    public static final TextureRegion crystal = new TextureRegion(new Texture("crystal.png"));
     public static final TextureRegion trap = new TextureRegion(new Texture("trap_adg_map.png"));
     public static final TextureRegion trap_cross = new TextureRegion(new Texture("trap_cross.png"));
     public static final TextureRegion bang = new TextureRegion(new Texture("bang.png"));

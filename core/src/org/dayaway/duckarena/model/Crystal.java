@@ -12,12 +12,14 @@ public class Crystal implements IActor {
     private final int HEIGHT = 3;
 
     private final Body body;
+    private final Vector2 position;
     private final TextureRegion textureRegion;
 
     private final long experience;
 
     public Crystal(Body body, TextureRegion textureRegion, long experience) {
         this.body = body;
+        this.position = new Vector2(body.getPosition());
         this.textureRegion = textureRegion;
         this.experience = experience;
     }
@@ -54,7 +56,7 @@ public class Crystal implements IActor {
 
     @Override
     public Vector2 getPosition() {
-        return body.getPosition();
+        return new Vector2(this.position);
     }
 
     public long getExperience() {

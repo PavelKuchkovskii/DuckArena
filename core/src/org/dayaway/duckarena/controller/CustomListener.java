@@ -121,7 +121,7 @@ public class CustomListener implements ContactListener {
             }
 
             //Если Bot(Центр масс) контактирует
-            if(contact.getFixtureA().getUserData() != null && contact.getFixtureA().getUserData().equals("bot")){
+            else if(contact.getFixtureA().getUserData() != null && contact.getFixtureA().getUserData().equals("bot")){
 
                 //С солдатами или башнями
                 if(contact.getFixtureB().getUserData() != null) {

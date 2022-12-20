@@ -18,15 +18,12 @@ public class BotsController {
 
     private final IWorld world;
     private final List<Bot> bots;
-    //Временный лист для обновления списка ботов
-    private final List<Bot> tmpList;
     private final IPlayer player;
     private final Random random;
 
     public BotsController(IController controller) {
         this.world = controller.getWorld();
         this.bots = world.getBots();
-        this.tmpList = new ArrayList<>();
         this.player = world.getPlayer();
         this.random = new Random();
     }

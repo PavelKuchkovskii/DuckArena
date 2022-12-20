@@ -3,6 +3,7 @@ package org.dayaway.duckarena.controller;
 import com.badlogic.gdx.math.Vector2;
 
 import org.dayaway.duckarena.controller.utils.SoldierAnimation;
+import org.dayaway.duckarena.model.Bot;
 import org.dayaway.duckarena.model.api.ISoldier;
 import org.dayaway.duckarena.model.api.IWorld;
 
@@ -18,7 +19,7 @@ public class SoldiersController{
         this.world = world;
         this.soldiers = world.getSoldiers();
 
-        this.animation = new SoldierAnimation(5, 0.5f);
+        this.animation = new SoldierAnimation(7, 0.5f);
     }
 
     public IWorld getWorld() {

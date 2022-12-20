@@ -95,7 +95,7 @@ public class BattleWorld implements IWorld {
             createSoldier(player);
         }
 
-        for (int i = 0; i < 800; i++) {
+        for (int i = 0; i < 1000; i++) {
             createCrystal();
         }
 
@@ -253,7 +253,7 @@ public class BattleWorld implements IWorld {
 
         Body botBody = world.createBody(botDef);
 
-        Bot bot = new Bot(botBody, BattleScreen.actorAttack);
+        Bot bot = new Bot(botBody, BattleScreen.actorPeace);
         bots.add(bot);
         botBody.setUserData(botBody);
 
@@ -282,6 +282,7 @@ public class BattleWorld implements IWorld {
         createCrossTrap(150,-150);
         createCircleKiller(-50,-50);
         createCircleKiller(50,50);
+        createCircleKiller(-50,50);
     }
 
     private void createEdgeTrap(float radius, float angleStep) {

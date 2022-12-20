@@ -9,7 +9,6 @@ import com.badlogic.gdx.math.Vector3;
 
 import org.dayaway.duckarena.model.api.ITrapRevolute;
 import org.dayaway.duckarena.view.Util.Box2DCustomDebugRenderer;
-import org.dayaway.duckarena.model.TrapEdgeMap;
 import org.dayaway.duckarena.model.api.IActor;
 import org.dayaway.duckarena.model.api.IWorld;
 import org.dayaway.duckarena.view.api.IRenderer;
@@ -25,7 +24,7 @@ public class BattleRenderer implements IRenderer {
     private final BitmapFont exp;
 
     public BattleRenderer(IWorld world) {
-        this.batch = new SpriteBatch();
+        this.batch = new SpriteBatch(5000);
         this.world = world;
         this.camera = new OrthographicCamera(100, 100 * ((float) Gdx.graphics.getHeight()/Gdx.graphics.getWidth()));
         this.camera.position.set(camera.viewportWidth/2f, camera.viewportHeight/2f, 0);
@@ -63,10 +62,14 @@ public class BattleRenderer implements IRenderer {
         /*exp.draw(batch,"Exp: " + world.getPlayer().getExp() + "/" + world.getPlayer().getLevel().getExp(), camera.unproject(new Vector3(0,0,0)).x,
                 camera.unproject(new Vector3(0,0,0)).y);*/
 
+        exp.draw(batch,"S: " + world.getSoldiers().size()  + "\n" +
+                "F: " + Gdx.graphics.getFramesPerSecond(), camera.unproject(new Vector3(0,0,0)).x,
+                camera.unproject(new Vector3(0,0,0)).y);
+
         batch.end();
 
         //renderer.render(world.getWorld(), camera.combined);
-        world.getWorld().step(1/60f, 6, 3);
+        world.getWorld().step(1/60f, 6, 2);
 
 
         for (ITrapRevolute trap : world.getTraps()) {
@@ -84,10 +87,12 @@ public class BattleRenderer implements IRenderer {
             }
         }
 
-        //System.out.println(Gdx.graphics.getFramesPerSecond());
+        /*System.out.println("SOLDIERS: " + world.getSoldiers().size());
+        System.out.println("CRYSTALS: " + world.getCrystals().size());
+        System.out.println("FPS: " + Gdx.graphics.getFramesPerSecond());*/
 
-        /*
-        System.out.println(batch.renderCalls);
+        /*System.out.println(batch.renderCalls);
+        System.out.println();
         System.out.println(batch.maxSpritesInBatch);*/
     }
 

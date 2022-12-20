@@ -81,7 +81,7 @@ public class Bot implements IBot {
 
     @Override
     public Vector2 getVelocity() {
-        return this.velocity;
+        return body.getLinearVelocity();
     }
 
     @Override
