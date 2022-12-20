@@ -108,6 +108,14 @@ public class BotsController {
         for (Bot bot : bots) {
             //Если у бота закончились солдаты, телепортируем центр масс в другое место и добавляем ему новых солдат
             if(bot.getSoldiers().size() == 0) {
+                //Если у Игрока еще есть солдаты
+                if(!player.getSoldiers().isEmpty()) {
+                    //на месте гибели бота добавляем кристаллы
+                    for (int i = 0; i < 50; i++) {
+                        world.createCrystal(bot.getBody().getPosition().x, bot.getBody().getPosition().y);
+                    }
+                }
+
                 bot.getBody().setTransform(new Vector2(random.nextInt(600)-300, random.nextInt(600)-300),0);
                 bot.setGoal(null);
 

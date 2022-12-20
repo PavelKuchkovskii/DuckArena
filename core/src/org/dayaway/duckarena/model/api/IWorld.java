@@ -38,6 +38,10 @@ public interface IWorld {
 
     void createSoldier(IPlayer player);
 
+    void createCrystal();
+
+    void createCrystal(float posX, float posY);
+
     List<ISoldier> getSoldiers();
 
     boolean isExist(Body body);

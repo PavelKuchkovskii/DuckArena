@@ -83,7 +83,7 @@ public class BattleWorld implements IWorld {
         createPlayer();
 
 
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 5; i++) {
             createBot();
         }
 
@@ -95,7 +95,7 @@ public class BattleWorld implements IWorld {
             createSoldier(player);
         }
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 800; i++) {
             createCrystal();
         }
 
@@ -155,7 +155,7 @@ public class BattleWorld implements IWorld {
         circle.dispose();
     }
 
-
+    @Override
     public void createCrystal() {
         float RADIUS = 430;
 
@@ -169,6 +169,34 @@ public class BattleWorld implements IWorld {
             crystalDef.position.set(x, y);
         }catch (Exception e) {
         }
+
+        Body crystalBody = world.createBody(crystalDef);
+        //Создаем новый кристалл
+        Crystal crystal = new Crystal(crystalBody, BattleScreen.crystal, 10);
+        crystals.add(crystal);
+
+        //Присваем его физическому телу
+        crystalBody.setUserData(crystal);
+
+        CircleShape circle = new CircleShape();
+        circle.setRadius(1.5f);
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = circle;
+        fixtureDef.density = 0f;
+        fixtureDef.friction = 0f;
+        fixtureDef.restitution = 0f;
+        fixtureDef.isSensor = true;
+
+        crystalBody.createFixture(fixtureDef).setUserData("crystal");
+        circle.dispose();
+    }
+
+    @Override
+    public void createCrystal(float posX, float posY) {
+        BodyDef crystalDef = new BodyDef();
+        crystalDef.type = BodyDef.BodyType.StaticBody;
+        crystalDef.position.set(posX + random.nextInt(30)-15, posY + random.nextInt(30)-15);
 
         Body crystalBody = world.createBody(crystalDef);
         //Создаем новый кристалл
