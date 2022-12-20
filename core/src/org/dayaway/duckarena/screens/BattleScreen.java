@@ -22,6 +22,7 @@ public class BattleScreen implements IGameScreen {
     public static final TextureRegion crystal = new TextureRegion(new Texture("red.png"));
     public static final TextureRegion trap = new TextureRegion(new Texture("trap_adg_map.png"));
     public static final TextureRegion trap_cross = new TextureRegion(new Texture("trap_cross.png"));
+    public static final TextureRegion bang = new TextureRegion(new Texture("bang.png"));
 
     public BattleScreen() {
         this.world = new BattleWorld();

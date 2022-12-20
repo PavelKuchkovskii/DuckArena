@@ -99,7 +99,7 @@ public class Bot implements IBot {
     public ILevel getLevel() {
 
         if(levels.empty()) {
-            levels.add(new Level((double) (experience * 1.05)));
+            levels.add(new Level((double) (experience * 1.01)));
         }
         return levels.peek();
     }

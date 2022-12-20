@@ -5,28 +5,34 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 
-public class TrapCrossMap extends TrapEdgeMap {
+import org.dayaway.duckarena.model.api.ITrapRevolute;
+
+public class TrapCrossMap implements ITrapRevolute {
+
+    private final RevoluteJoint joint;
+    private TextureRegion textureRegion;
 
     private final int WIDTH = 75;
     private final int HEIGHT = 75;
 
     public TrapCrossMap(RevoluteJoint joint, TextureRegion region) {
-        super(joint, region);
+        this.joint = joint;
+        this.textureRegion = region;
     }
 
     @Override
     public Body getBody() {
-        return super.getBody();
+        return joint.getBodyB();
     }
 
     @Override
     public TextureRegion getTexture() {
-        return super.getTexture();
+        return this.textureRegion;
     }
 
     @Override
     public TextureRegion getFrame() {
-        return super.getFrame();
+        return this.textureRegion;
     }
 
     @Override
@@ -50,6 +56,6 @@ public class TrapCrossMap extends TrapEdgeMap {
 
     @Override
     public RevoluteJoint getJoint() {
-        return super.getJoint();
+        return this.joint;
     }
 }

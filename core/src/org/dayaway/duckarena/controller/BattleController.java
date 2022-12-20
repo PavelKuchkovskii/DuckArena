@@ -20,6 +20,9 @@ public class BattleController implements IController {
 
     private final BotsController botsController;
 
+
+    private final BangsController bangsController;
+
     private final JoyStick joyStick;
 
     public BattleController(IWorld world) {
@@ -37,6 +40,8 @@ public class BattleController implements IController {
         this.towersController = new TowersController(world);
 
         this.botsController = new BotsController(this);
+
+        this.bangsController = new BangsController(world);
     }
 
     @Override
@@ -59,6 +64,8 @@ public class BattleController implements IController {
         towersController.update(dt);
 
         botsController.update(dt);
+
+        bangsController.update(dt);
 
         destroy();
     }

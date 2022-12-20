@@ -12,17 +12,23 @@ import org.dayaway.duckarena.model.api.IWorld;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class BotsController {
 
     private final IWorld world;
     private final List<Bot> bots;
+    //Временный лист для обновления списка ботов
+    private final List<Bot> tmpList;
     private final IPlayer player;
+    private final Random random;
 
     public BotsController(IController controller) {
         this.world = controller.getWorld();
         this.bots = world.getBots();
+        this.tmpList = new ArrayList<>();
         this.player = world.getPlayer();
+        this.random = new Random();
     }
 
     public void update(float dt) {
@@ -31,6 +37,8 @@ public class BotsController {
         move();
 
         expBot();
+
+        updateChanges();
     }
 
     //Проверяем набрал ли Bot достаточно опыта и если да, переводим на след уровень
@@ -90,6 +98,21 @@ public class BotsController {
                 //Если в мире нет Body цели, то цель равна null
                 if(!world.isExist(bot.getGoal().getBody())) {
                     bot.setGoal(null);
+                }
+            }
+        }
+    }
+
+    private void updateChanges() {
+
+        for (Bot bot : bots) {
+            //Если у бота закончились солдаты, телепортируем центр масс в другое место и добавляем ему новых солдат
+            if(bot.getSoldiers().size() == 0) {
+                bot.getBody().setTransform(new Vector2(random.nextInt(600)-300, random.nextInt(600)-300),0);
+                bot.setGoal(null);
+
+                for (int i = 0; i < player.getSoldiers().size(); i++) {
+                    world.createSoldier(bot);
                 }
             }
         }

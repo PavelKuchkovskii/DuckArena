@@ -13,14 +13,18 @@ import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.badlogic.gdx.utils.Array;
 
 import org.dayaway.duckarena.model.api.IActor;
+import org.dayaway.duckarena.model.api.IBang;
 import org.dayaway.duckarena.model.api.IPlayer;
 import org.dayaway.duckarena.model.api.ISoldier;
+import org.dayaway.duckarena.model.api.ITrapRevolute;
 import org.dayaway.duckarena.model.api.IWorld;
 import org.dayaway.duckarena.screens.BattleScreen;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 public class BattleWorld implements IWorld {
 
@@ -40,22 +44,30 @@ public class BattleWorld implements IWorld {
 
     private final List<Tower> towers;
 
-    private final List<TrapEdgeMap> trapEdgeMaps;
+    private final List<ITrapRevolute> trapsRevolute;
+
+    private final List<CircleKiller> circleKillers;
+
+    private final List<IBang> bangs;
 
     Random random = new Random();
 
-    private final List<Body> destroy;
+    private final Set<Body> destroy;
 
     public BattleWorld() {
         this.world = new World(new Vector2(0,0), true);
         this.actors = new ArrayList<>();
         this.crystals = new ArrayList<>();
         this.towers = new ArrayList<>();
-        this.destroy = new ArrayList<>();
+        this.destroy = new HashSet<>();
 
         this.soldiers = new ArrayList<>();
 
-        this.trapEdgeMaps = new ArrayList<>();
+        this.trapsRevolute = new ArrayList<>();
+
+        this.circleKillers = new ArrayList<>();
+
+        this.bangs = new ArrayList<>();
 
         bots = new ArrayList<>();
 
@@ -69,17 +81,21 @@ public class BattleWorld implements IWorld {
         createMap();
 
         createPlayer();
-        createBot();
+
+
+        for (int i = 0; i < 9; i++) {
+            createBot();
+        }
+
+        for (Bot bot : bots) {
+            createSoldier(bot);
+        }
 
         for (int i = 0; i < 1; i++) {
             createSoldier(player);
         }
-        for (int i = 0; i < 1; i++) {
-            createSoldier(bots.get(0));
-        }
 
-
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 100; i++) {
             createCrystal();
         }
 
@@ -91,7 +107,7 @@ public class BattleWorld implements IWorld {
     public void createPlayer() {
         BodyDef playerDef = new BodyDef();
         playerDef.type = BodyDef.BodyType.DynamicBody;
-        playerDef.position.set(20, 0);
+        playerDef.position.set(-50, -100);
 
         Body playerBody = world.createBody(playerDef);
 
@@ -135,15 +151,24 @@ public class BattleWorld implements IWorld {
         fixtureDef.friction = 0f;
         fixtureDef.restitution = 0f; // Make it bounce a little bit
 
-        soldierBody.createFixture(fixtureDef).setUserData(player.getClass().getName() + "soldier");
+        soldierBody.createFixture(fixtureDef).setUserData(player + "soldier");
         circle.dispose();
     }
 
 
     public void createCrystal() {
+        float RADIUS = 430;
+
         BodyDef crystalDef = new BodyDef();
         crystalDef.type = BodyDef.BodyType.StaticBody;
-        crystalDef.position.set(random.nextInt(800)-400, random.nextInt(800)-400);
+        float x = random.nextInt((int) (RADIUS * 2)) - RADIUS;
+        double maxY = Math.sqrt((RADIUS*RADIUS) - (x*x));
+
+        try {
+            float y = (float) (random.nextInt((int) (maxY * 2)) - maxY);
+            crystalDef.position.set(x, y);
+        }catch (Exception e) {
+        }
 
         Body crystalBody = world.createBody(crystalDef);
         //Создаем новый кристалл
@@ -192,11 +217,11 @@ public class BattleWorld implements IWorld {
         towerBody.createFixture(fixtureDef).setUserData("tower");
     }
 
-
-    public void createBot() {
+    @Override
+    public Bot createBot() {
         BodyDef botDef = new BodyDef();
         botDef.type = BodyDef.BodyType.DynamicBody;
-        botDef.position.set(100, 0);
+        botDef.position.set(random.nextInt(600) - 300, random.nextInt(600) - 300);
 
         Body botBody = world.createBody(botDef);
 
@@ -215,14 +240,20 @@ public class BattleWorld implements IWorld {
         botBody.createFixture(fixtureDef).setUserData("bot");
 
         circle.dispose();
+
+        return bot;
     }
 
     public void create() {
 
         createEdgeTrap(445, 30);
         createCrossTrap(0,0);
-        createCrossTrap(-100,-100);
-        createCrossTrap(100,100);
+        createCrossTrap(-150,-150);
+        createCrossTrap(150,150);
+        createCrossTrap(-150,150);
+        createCrossTrap(150,-150);
+        createCircleKiller(-50,-50);
+        createCircleKiller(50,50);
     }
 
     private void createEdgeTrap(float radius, float angleStep) {
@@ -263,7 +294,7 @@ public class BattleWorld implements IWorld {
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = pol;
             fixtureDef.density = 5f;
-            bodyPol.createFixture(fixtureDef);
+            bodyPol.createFixture(fixtureDef).setUserData("trap");
 
             pol.dispose();
 
@@ -282,7 +313,7 @@ public class BattleWorld implements IWorld {
             jointDef.maxMotorTorque = 5_000_000;
             jointDef.motorSpeed = (float) Math.toRadians(360);
 
-            this.trapEdgeMaps.add(new TrapEdgeMap( (RevoluteJoint) world.createJoint(jointDef), BattleScreen.trap));
+            this.trapsRevolute.add(new TrapEdgeMap( (RevoluteJoint) world.createJoint(jointDef), BattleScreen.trap));
         }
 
     }
@@ -326,7 +357,7 @@ public class BattleWorld implements IWorld {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = polygonShape;
         fixtureDef.density = 5f;
-        bodyPol.createFixture(fixtureDef);
+        bodyPol.createFixture(fixtureDef).setUserData("trap");
 
         //Создаем вторую часть креста
         vertices[0] = new Vector2(width,width);
@@ -336,7 +367,7 @@ public class BattleWorld implements IWorld {
 
         polygonShape.set(vertices);
         fixtureDef.shape = polygonShape;
-        bodyPol.createFixture(fixtureDef);
+        bodyPol.createFixture(fixtureDef).setUserData("trap");
 
         //Создаем тертью часть креста
         vertices[0] = new Vector2(width,-width);
@@ -346,7 +377,7 @@ public class BattleWorld implements IWorld {
 
         polygonShape.set(vertices);
         fixtureDef.shape = polygonShape;
-        bodyPol.createFixture(fixtureDef);
+        bodyPol.createFixture(fixtureDef).setUserData("trap");
 
         //Создаем четвертую часть креста
         vertices[0] = new Vector2(-width,-width);
@@ -356,7 +387,7 @@ public class BattleWorld implements IWorld {
 
         polygonShape.set(vertices);
         fixtureDef.shape = polygonShape;
-        bodyPol.createFixture(fixtureDef);
+        bodyPol.createFixture(fixtureDef).setUserData("trap");
 
         polygonShape.dispose();
 
@@ -371,8 +402,32 @@ public class BattleWorld implements IWorld {
         jointDef.maxMotorTorque = 5_000_000;
         jointDef.motorSpeed = (float) Math.toRadians(360);
 
-        this.trapEdgeMaps.add(new TrapCrossMap( (RevoluteJoint) world.createJoint(jointDef), BattleScreen.trap_cross));
+        this.trapsRevolute.add(new TrapCrossMap( (RevoluteJoint) world.createJoint(jointDef), BattleScreen.trap_cross));
 
+    }
+
+    public void createCircleKiller(float x, float y) {
+        BodyDef circleKillerDef = new BodyDef();
+        circleKillerDef.type = BodyDef.BodyType.DynamicBody;
+        circleKillerDef.position.set(x, y);
+
+
+        Body circleKillerBody = world.createBody(circleKillerDef);
+        circleKillerBody.applyLinearImpulse(new Vector2(x,y), new Vector2(0,0), true);
+
+        CircleKiller circleKiller = new CircleKiller(circleKillerBody, BattleScreen.crystal);
+        circleKillers.add(circleKiller);
+
+        CircleShape circle = new CircleShape();
+        circle.setRadius(20f);
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = circle;
+        fixtureDef.density = 0.5f;
+        fixtureDef.restitution = 2f;
+        circleKillerBody.createFixture(fixtureDef).setUserData("trap");
+
+        circle.dispose();
     }
 
     @Override
@@ -397,13 +452,17 @@ public class BattleWorld implements IWorld {
         //Потом добавляем кристаллы
         actors.addAll(crystals);
 
-        actors.addAll(trapEdgeMaps);
+        actors.addAll(circleKillers);
+
+        actors.addAll(trapsRevolute);
 
         //Солдаты в конце перед башнями
         actors.addAll(soldiers);
 
         //Добавляем башни
         actors.addAll(towers);
+
+        actors.addAll(bangs);
 
         return actors;
     }
@@ -424,8 +483,18 @@ public class BattleWorld implements IWorld {
     }
 
     @Override
-    public List<TrapEdgeMap> getTraps() {
-        return this.trapEdgeMaps;
+    public List<ITrapRevolute> getTraps() {
+        return this.trapsRevolute;
+    }
+
+    @Override
+    public List<IBang> getBangs() {
+        return this.bangs;
+    }
+
+    @Override
+    public void addBang(IBang bang) {
+        this.bangs.add(bang);
     }
 
     @Override
@@ -439,7 +508,7 @@ public class BattleWorld implements IWorld {
     }
 
     @Override
-    public List<Body> getDestroy() {
+    public Set<Body> getDestroy() {
         return this.destroy;
     }
 
@@ -455,7 +524,9 @@ public class BattleWorld implements IWorld {
 
     @Override
     public void destroy() {
+
         for (Body body : destroy) {
+
             if(body.getUserData() instanceof Crystal) {
                 crystals.remove((Crystal) body.getUserData());
             }

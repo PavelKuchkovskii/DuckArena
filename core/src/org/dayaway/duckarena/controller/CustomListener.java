@@ -6,8 +6,10 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.WorldManifold;
 
+import org.dayaway.duckarena.model.Bang;
 import org.dayaway.duckarena.model.api.ISoldier;
 import org.dayaway.duckarena.model.api.IWorld;
+import org.dayaway.duckarena.screens.BattleScreen;
 
 public class CustomListener implements ContactListener {
 
@@ -28,21 +30,35 @@ public class CustomListener implements ContactListener {
             if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("tower")) {
                 //Уничтожаем солдата
                 world.addToDestroy(contact.getFixtureA().getBody());
+
+                //Добавляем анимацию взрыва
+                world.addBang(new Bang(contact.getFixtureA().getBody().getPosition(), BattleScreen.bang));
             }
             //С КРИСТАЛЛАМИ
             else if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("crystal")) {
-                //Добавляем кристал в список на уничтожение
-                world.addToDestroy(contact.getFixtureB().getBody());
                 //Добавляем Player опыт из кристалла
                 ((ISoldier) contact.getFixtureA().getBody().getUserData()).getPlayer().exp(contact.getFixtureB().getBody());
+                //Добавляем кристал в список на уничтожение
+                world.addToDestroy(contact.getFixtureB().getBody());
             }
 
             //С ДРУГИМИ СОЛДАТАМИ
-            if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("soldier")
+            else if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("soldier")
             && !contact.getFixtureA().getUserData().equals(contact.getFixtureB().getUserData())) {
                 //Уничтожаем солдата
                 world.addToDestroy(contact.getFixtureA().getBody());
                 world.addToDestroy(contact.getFixtureB().getBody());
+
+                //Добавляем анимацию взрыва на оюоих солдат
+                world.addBang(new Bang(contact.getFixtureA().getBody().getPosition(), BattleScreen.bang));
+                world.addBang(new Bang(contact.getFixtureB().getBody().getPosition(), BattleScreen.bang));
+            }
+
+            //С ловушками
+            else if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("trap")) {
+                //Уничтожаем солдата
+                world.addToDestroy(contact.getFixtureA().getBody());
+                world.addBang(new Bang(contact.getFixtureA().getBody().getPosition(), BattleScreen.bang));
             }
         }
 
@@ -52,6 +68,19 @@ public class CustomListener implements ContactListener {
             if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("soldier")) {
                 //Уничтожаем солдата
                 world.addToDestroy(contact.getFixtureB().getBody());
+                //Добавляем анимацию взрыва
+                world.addBang(new Bang(contact.getFixtureB().getBody().getPosition(), BattleScreen.bang));
+            }
+        }
+
+        //Если ловушка сталкивается
+        else if(contact.getFixtureA().getUserData() != null && contact.getFixtureA().getUserData().equals("trap")) {
+            //С СОЛДАТАМИ
+            if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("soldier")) {
+                //Уничтожаем солдата
+                world.addToDestroy(contact.getFixtureB().getBody());
+                //Добавляем анимацию взрыва
+                world.addBang(new Bang(contact.getFixtureB().getBody().getPosition(), BattleScreen.bang));
             }
         }
 
@@ -59,10 +88,10 @@ public class CustomListener implements ContactListener {
         else if(contact.getFixtureA().getUserData() != null && contact.getFixtureA().getUserData().equals("crystal")) {
             //С СОЛДАТАМИ
             if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("soldier")) {
-                //Добавляем кристал в список на уничтожение
-                world.addToDestroy(contact.getFixtureA().getBody());
                 //Добавляем Player опыт из кристалла
                 ((ISoldier) contact.getFixtureB().getBody().getUserData()).getPlayer().exp(contact.getFixtureA().getBody());
+                //Добавляем кристал в список на уничтожение
+                world.addToDestroy(contact.getFixtureA().getBody());
             }
         }
     }

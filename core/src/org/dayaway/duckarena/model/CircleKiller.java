@@ -3,26 +3,27 @@ package org.dayaway.duckarena.model;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 
-import org.dayaway.duckarena.model.api.ITrapRevolute;
+import org.dayaway.duckarena.model.api.IActor;
 
-public class TrapEdgeMap implements ITrapRevolute {
+public class CircleKiller implements IActor {
 
-    private final RevoluteJoint joint;
+
+    private final Body body;
     private final TextureRegion textureRegion;
+    private TextureRegion frame;
 
-    private final int WIDTH = 50;
-    private final int HEIGHT = 60;
+    private final int WIDTH = 40;
+    private final int HEIGHT = 40;
 
-    public TrapEdgeMap(RevoluteJoint joint, TextureRegion region) {
-        this.joint = joint;
-        this.textureRegion = region;
+    public CircleKiller(Body body, TextureRegion textureRegion) {
+        this.body = body;
+        this.textureRegion = textureRegion;
     }
 
     @Override
     public Body getBody() {
-        return joint.getBodyB();
+        return this.body;
     }
 
     @Override
@@ -36,7 +37,8 @@ public class TrapEdgeMap implements ITrapRevolute {
     }
 
     @Override
-    public void setFrame(TextureRegion frame) {
+    public void setFrame(TextureRegion texture) {
+        this.frame = texture;
     }
 
     @Override
@@ -51,11 +53,6 @@ public class TrapEdgeMap implements ITrapRevolute {
 
     @Override
     public Vector2 getPosition() {
-        return getBody().getPosition();
-    }
-
-    @Override
-    public RevoluteJoint getJoint() {
-        return this.joint;
+        return this.body.getPosition();
     }
 }
