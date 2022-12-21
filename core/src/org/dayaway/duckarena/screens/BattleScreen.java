@@ -9,7 +9,7 @@ import org.dayaway.duckarena.model.BattleWorld;
 import org.dayaway.duckarena.model.api.IWorld;
 import org.dayaway.duckarena.screens.api.IGameScreen;
 import org.dayaway.duckarena.view.BattleRenderer;
-import org.dayaway.duckarena.view.api.IRenderer;
+import org.dayaway.duckarena.view.Util.api.IRenderer;
 
 public class BattleScreen implements IGameScreen {
 

@@ -1,4 +1,4 @@
-package org.dayaway.duckarena.view.api;
+package org.dayaway.duckarena.view.Util.api;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 

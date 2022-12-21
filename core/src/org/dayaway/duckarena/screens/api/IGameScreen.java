@@ -2,7 +2,7 @@ package org.dayaway.duckarena.screens.api;
 
 import com.badlogic.gdx.Screen;
 
-import org.dayaway.duckarena.view.api.IRenderer;
+import org.dayaway.duckarena.view.Util.api.IRenderer;
 
 public interface IGameScreen extends Screen {
 

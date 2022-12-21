@@ -11,7 +11,7 @@ import org.dayaway.duckarena.model.api.ITrapRevolute;
 import org.dayaway.duckarena.view.Util.Box2DCustomDebugRenderer;
 import org.dayaway.duckarena.model.api.IActor;
 import org.dayaway.duckarena.model.api.IWorld;
-import org.dayaway.duckarena.view.api.IRenderer;
+import org.dayaway.duckarena.view.Util.api.IRenderer;
 
 public class BattleRenderer implements IRenderer {
 
