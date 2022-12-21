@@ -68,6 +68,8 @@ public class BattleController implements IController {
         bangsController.update(dt);
 
         destroy();
+
+        world.getWorld().step(dt, 6, 2);
     }
 
     @Override

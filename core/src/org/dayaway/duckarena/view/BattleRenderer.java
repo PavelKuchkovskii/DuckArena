@@ -69,7 +69,7 @@ public class BattleRenderer implements IRenderer {
         batch.end();
 
         //renderer.render(world.getWorld(), camera.combined);
-        world.getWorld().step(1/60f, 6, 2);
+
 
 
         for (ITrapRevolute trap : world.getTraps()) {
