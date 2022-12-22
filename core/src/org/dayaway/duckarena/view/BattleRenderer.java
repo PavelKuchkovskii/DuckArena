@@ -28,7 +28,7 @@ public class BattleRenderer implements IRenderer {
         this.world = world;
         this.camera = new OrthographicCamera(100, 100 * ((float) Gdx.graphics.getHeight()/Gdx.graphics.getWidth()));
         this.camera.position.set(camera.viewportWidth/2f, camera.viewportHeight/2f, 0);
-        //camera.zoom +=8;
+        camera.zoom +=5;
 
         this.exp = new BitmapFont();
         this.exp.getData().setScale(0.2f);

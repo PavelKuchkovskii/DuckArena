@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.WorldManifold;
 
 import org.dayaway.duckarena.model.Bang;
+import org.dayaway.duckarena.model.Crystal;
 import org.dayaway.duckarena.model.api.ISoldier;
 import org.dayaway.duckarena.model.api.IWorld;
 import org.dayaway.duckarena.screens.BattleScreen;
@@ -71,6 +72,13 @@ public class CustomListener implements ContactListener {
                 //Добавляем анимацию взрыва
                 world.addBang(new Bang(contact.getFixtureB().getBody().getPosition(), BattleScreen.bang));
             }
+
+            //С КРИСТАЛЛАМИ-НЕ РАБОТАЕТ!!!!
+            else if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("crystal")) {
+                //Ставим метку что Кристалл опасный
+                ((Crystal) contact.getFixtureB().getBody().getUserData()).setDanger(true);
+                System.out.println("!!!!!B!");
+            }
         }
 
         //Если ловушка сталкивается
@@ -81,6 +89,12 @@ public class CustomListener implements ContactListener {
                 world.addToDestroy(contact.getFixtureB().getBody());
                 //Добавляем анимацию взрыва
                 world.addBang(new Bang(contact.getFixtureB().getBody().getPosition(), BattleScreen.bang));
+            }
+
+            //С КРИСТАЛЛАМИ
+            else if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("crystal")) {
+                //Ставим метку что Кристалл опасный
+                ((Crystal) contact.getFixtureB().getBody().getUserData()).setDanger(true);
             }
         }
 
@@ -93,12 +107,53 @@ public class CustomListener implements ContactListener {
                 //Добавляем кристал в список на уничтожение
                 world.addToDestroy(contact.getFixtureA().getBody());
             }
+            //С ловушками
+            else if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("trap")) {
+                //Ставим метку что Кристалл опасный
+                ((Crystal) contact.getFixtureA().getBody().getUserData()).setDanger(true);
+            }
+            //С БАШНЯМИ-НЕ РАБОТАЕТ!!!!
+            else if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("tower")) {
+                //Ставим метку что Кристалл опасный
+                ((Crystal) contact.getFixtureA().getBody().getUserData()).setDanger(true);
+            }
         }
     }
 
     @Override
     public void endContact(Contact contact) {
 
+        //Если кристалл перестает сталкиваться
+        if(contact.getFixtureA().getUserData() != null && contact.getFixtureA().getUserData().equals("crystal")) {
+            //С ловушками
+            if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("trap")) {
+                //Ставим метку что Кристалл безопасный
+                ((Crystal) contact.getFixtureA().getBody().getUserData()).setDanger(false);
+            }
+            //С БАШНЯМИ
+            else if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("tower")) {
+                //Ставим метку что Кристалл безопасный
+                ((Crystal) contact.getFixtureA().getBody().getUserData()).setDanger(false);
+            }
+        }
+
+        //Если ловушка перестает сталкиваться
+        else if(contact.getFixtureA().getUserData() != null && contact.getFixtureA().getUserData().equals("trap")) {
+            //С КРИСТАЛЛАМИ
+            if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("crystal")) {
+                //Ставим метку что Кристалл безопасный
+                ((Crystal) contact.getFixtureB().getBody().getUserData()).setDanger(false);
+            }
+        }
+
+        //Если башня сталкивается
+        else if(contact.getFixtureA().getUserData() != null && contact.getFixtureA().getUserData().equals("tower")) {
+            //С КРИСТАЛЛАМИ
+            if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("crystal")) {
+                //Ставим метку что Кристалл безопасный
+                ((Crystal) contact.getFixtureB().getBody().getUserData()).setDanger(false);
+            }
+        }
     }
 
     @Override

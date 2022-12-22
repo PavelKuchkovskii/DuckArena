@@ -25,6 +25,8 @@ public class BattleController implements IController {
 
     private final JoyStick joyStick;
 
+    private final float STEP = 1/60f;
+
     public BattleController(IWorld world) {
         this.world = world;
         this.joyStick = new JoyStick(null, null);
@@ -69,12 +71,17 @@ public class BattleController implements IController {
 
         destroy();
 
-        world.getWorld().step(dt, 6, 2);
+        worldStep(dt);
     }
 
     @Override
     public JoyStick getJoyStick() {
         return this.joyStick;
+    }
+
+    public void worldStep(float dt) {
+
+        world.getWorld().step(dt>(1/40f) && dt < 0.1f ? dt : STEP, 6, 2);
     }
 
 

@@ -161,6 +161,7 @@ public class BattleWorld implements IWorld {
 
         BodyDef crystalDef = new BodyDef();
         crystalDef.type = BodyDef.BodyType.StaticBody;
+
         float x = random.nextInt((int) (RADIUS * 2)) - RADIUS;
         double maxY = Math.sqrt((RADIUS*RADIUS) - (x*x));
 
@@ -194,9 +195,20 @@ public class BattleWorld implements IWorld {
 
     @Override
     public void createCrystal(float posX, float posY) {
+        float RADIUS = 33;
+
         BodyDef crystalDef = new BodyDef();
         crystalDef.type = BodyDef.BodyType.StaticBody;
-        crystalDef.position.set(posX + random.nextInt(30)-15, posY + random.nextInt(30)-15);
+
+        float x = (random.nextInt((int) (RADIUS * 2)) - RADIUS) + posX;
+
+        double maxY = Math.sqrt((RADIUS*RADIUS) - (Math.abs(x-posX) * Math.abs(x-posX)));
+
+        try {
+            float y = (float) (random.nextInt((int) (maxY * 2)) - maxY) + posY;
+            crystalDef.position.set(x, y);
+        }catch (Exception e) {
+        }
 
         Body crystalBody = world.createBody(crystalDef);
         //Создаем новый кристалл
@@ -442,7 +454,7 @@ public class BattleWorld implements IWorld {
 
 
         Body circleKillerBody = world.createBody(circleKillerDef);
-        circleKillerBody.applyLinearImpulse(new Vector2(x,y), new Vector2(0,0), true);
+        circleKillerBody.setLinearVelocity(x*2, y*2);
 
         CircleKiller circleKiller = new CircleKiller(circleKillerBody, BattleScreen.crystal);
         circleKillers.add(circleKiller);
@@ -503,12 +515,14 @@ public class BattleWorld implements IWorld {
 
     @Override
     public boolean isExist(Body body) {
-        //создаем пустой массив
-        Array<Body> bodies = new Array<>();
-        //Получаем в него все Body из мира
-        world.getBodies(bodies);
 
-        return bodies.contains(body, true);
+        if(body.getUserData() != null) {
+            if(body.getUserData() instanceof Crystal) {
+                return crystals.contains((Crystal) body.getUserData());
+            }
+
+        }
+        return false;
     }
 
     @Override

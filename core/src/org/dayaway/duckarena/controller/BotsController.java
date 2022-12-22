@@ -61,10 +61,10 @@ public class BotsController {
             if(bot.getGoal() != null) {
                 v1 = cohesion(bot);
 
-                float x = v1.x;
-                float y = v1.y;
+                float x = bot.getBody().getLinearVelocity().x + v1.x;
+                float y = bot.getBody().getLinearVelocity().y + v1.y;
 
-                bot.getBody().setLinearVelocity(x, y);
+                bot.getBody().setLinearVelocity(correctionVelocity(x, y));
             }
         }
 
@@ -72,6 +72,40 @@ public class BotsController {
 
     private Vector2 cohesion(Bot bot) {
         return bot.getGoal().getPosition().sub(bot.getPosition());
+    }
+
+    //Корректируем скорость центра масс ботов, делаем их равными скорости плеера
+    private Vector2 correctionVelocity(float x, float y) {
+        float angle = 0;
+
+        if(x >= 0) {
+            if(y >= 0) {
+                //Если будут равны нулю, то получим Nan
+                //Поэтому такие ситуации просто пропускаем и угол остается таким какой он был
+                if(y != 0 && x != 0) {
+                    angle = (float) Math.toDegrees(Math.atan(y/x));
+                }
+            }
+            else {
+                angle = 360f - (float) Math.toDegrees(Math.atan(Math.abs(y)/x));
+            }
+
+        }
+        else {
+            if(y >= 0) {
+                angle = 180f - (float) Math.toDegrees(Math.atan(y/Math.abs(x)));
+            }
+            else {
+                angle = 180f + (float) Math.toDegrees(Math.atan(Math.abs(y)/Math.abs(x)));
+            }
+
+        }
+
+        float x1 = (float) (world.getPlayer().getSpeed() * Math.cos(Math.toRadians(angle)));
+        float y1 = (float) (world.getPlayer().getSpeed() * Math.sin(Math.toRadians(angle)));
+
+        return new Vector2(x1, y1);
+
     }
 
     private void decide() {
@@ -83,20 +117,30 @@ public class BotsController {
 
                 if(!world.getCrystals().isEmpty()) {
                     for (Crystal crystal : world.getCrystals()) {
-                        goals.add(new VectorGoal(getVector(bot.getPosition(), crystal.getPosition()), crystal));
+                        //Если кристалл безопасный отслеживаем расстояние до него
+                        if(!crystal.isDanger()) {
+                            goals.add(new VectorGoal(getVector(bot.getPosition(), crystal.getPosition()), crystal));
+                        }
+
                     }
 
                     Collections.sort(goals);
 
-                    bot.setGoal(goals.get(0).getGoal());
+                    if(!goals.isEmpty()) {
+                        bot.setGoal(goals.get(0).getGoal());
+                    }
                 }
             }
             else {
                 //Если в мире нет Body цели, то цель равна null
-                if(!world.isExist(bot.getGoal().getBody())) {
+                if(bot.getGoal().getBody().getUserData() == null
+                        || ((Crystal) bot.getGoal().getBody().getUserData()).isDanger()
+                        || !world.isExist(bot.getGoal().getBody())) {
                     bot.setGoal(null);
                 }
             }
+
+
         }
     }
 
