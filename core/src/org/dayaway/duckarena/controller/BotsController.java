@@ -4,9 +4,11 @@ import com.badlogic.gdx.math.Vector2;
 
 import org.dayaway.duckarena.controller.api.IController;
 import org.dayaway.duckarena.model.Bot;
+import org.dayaway.duckarena.model.CircleKiller;
 import org.dayaway.duckarena.model.Crystal;
 import org.dayaway.duckarena.model.api.IActor;
 import org.dayaway.duckarena.model.api.IPlayer;
+import org.dayaway.duckarena.model.api.ITrapRevolute;
 import org.dayaway.duckarena.model.api.IWorld;
 
 import java.util.ArrayList;
@@ -55,16 +57,21 @@ public class BotsController {
     private void move() {
 
         Vector2 v1;
+        Vector2 v2;
 
         for (Bot bot : bots) {
 
             if(bot.getGoal() != null) {
                 v1 = cohesion(bot);
+                v2 = rule2(bot);
 
-                float x = bot.getBody().getLinearVelocity().x + v1.x;
-                float y = bot.getBody().getLinearVelocity().y + v1.y;
+                float x = bot.getBody().getLinearVelocity().x + v1.x + v2.x;
+                float y = bot.getBody().getLinearVelocity().y + v1.y + v2.y;
 
-                bot.getBody().setLinearVelocity(correctionVelocity(x, y));
+                bot.getBody().setLinearVelocity(correctionVelocity(x,y));
+            }
+            else {
+                bot.getBody().setLinearVelocity(0,0);
             }
         }
 
@@ -108,6 +115,49 @@ public class BotsController {
 
     }
 
+    private Vector2 rule2(Bot bot) {
+        Vector2 c = new Vector2(0,0);
+
+        for (ITrapRevolute trap : world.getTraps()) {
+            if(getVector(bot.getPosition(), trap.getPosition()) < 60) {
+
+                if(bot.getPosition().x < trap.getPosition().x) {
+                    c.x -= 2000;
+                }
+                else {
+                    c.x += 2000;
+                }
+
+                if(bot.getPosition().y < trap.getPosition().y) {
+                    c.y -= 2000;
+                }
+                else {
+                    c.y += 2000;
+                }
+            }
+
+        }
+        for (CircleKiller trap : world.getCircleTraps()) {
+            if(getVector(bot.getPosition(), trap.getPosition()) < 50) {
+
+                if(bot.getPosition().x < trap.getPosition().x) {
+                    c.x -= 2000;
+                }
+                else {
+                    c.x += 2000;
+                }
+
+                if(bot.getPosition().y < trap.getPosition().y) {
+                    c.y -= 2000;
+                }
+                else {
+                    c.y += 2000;
+                }
+            }
+        }
+        return c;
+    }
+
     private void decide() {
 
         for (Bot bot : bots) {
@@ -128,14 +178,19 @@ public class BotsController {
 
                     if(!goals.isEmpty()) {
                         bot.setGoal(goals.get(0).getGoal());
+                        bot.setTimeStartGoal(System.currentTimeMillis());
                     }
                 }
             }
             else {
                 //Если в мире нет Body цели, то цель равна null
                 if(bot.getGoal().getBody().getUserData() == null
-                        || ((Crystal) bot.getGoal().getBody().getUserData()).isDanger()
-                        || !world.isExist(bot.getGoal().getBody())) {
+                        || !world.isExist(bot.getGoal().getBody())
+                        || ((Crystal) bot.getGoal().getBody().getUserData()).isDanger()) {
+                    bot.setGoal(null);
+                }
+                else if((System.currentTimeMillis() - bot.getTimeStartGoal()) > 1000) {
+                    ((Crystal) bot.getGoal()).setDanger(true);
                     bot.setGoal(null);
                 }
             }
@@ -153,7 +208,7 @@ public class BotsController {
                 if(!player.getSoldiers().isEmpty()) {
                     //на месте гибели бота добавляем кристаллы
                     for (int i = 0; i < 50; i++) {
-                        world.createCrystal(bot.getBody().getPosition().x, bot.getBody().getPosition().y);
+                        world.createCrystal(bot.getBody().getPosition().x, bot.getBody().getPosition().y, 33);
                     }
                 }
 
@@ -167,6 +222,8 @@ public class BotsController {
         }
     }
 
+    //v1 - bot
+    //v2 - goal
     float getVector(Vector2 vector1, Vector2 vector2) {
         float leg1;
         float leg2;

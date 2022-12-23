@@ -83,23 +83,25 @@ public class BattleWorld implements IWorld {
         createPlayer();
 
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 3; i++) {
             createBot();
         }
 
         for (Bot bot : bots) {
-            createSoldier(bot);
+            for (int i = 0; i < 1; i++) {
+                createSoldier(bot);
+            }
         }
 
         for (int i = 0; i < 1; i++) {
             createSoldier(player);
         }
 
-        for (int i = 0; i < 1000; i++) {
-            createCrystal();
+        for (int i = 0; i < 300; i++) {
+            createCrystal(player.getPosition().x, player.getPosition().y, 250f);
         }
 
-        createTower();
+        //createTower();
 
         create();
     }
@@ -123,6 +125,14 @@ public class BattleWorld implements IWorld {
         fixtureDef.friction = 0f;
         fixtureDef.restitution = 0f;
         playerBody.createFixture(fixtureDef).setUserData("player");
+
+        circle = new CircleShape();
+        circle.setRadius(250f);
+
+        fixtureDef = new FixtureDef();
+        fixtureDef.shape = circle;
+        fixtureDef.isSensor = true;
+        playerBody.createFixture(fixtureDef).setUserData("player_sensor");
 
         circle.dispose();
     }
@@ -155,18 +165,29 @@ public class BattleWorld implements IWorld {
         circle.dispose();
     }
 
+
+    //Создает кристалы, в радиусе вокруг игрока, вне видимости камеры
     @Override
     public void createCrystal() {
-        float RADIUS = 430;
+        float RADIUS = 250;
+        float posX = player.getPosition().x;
+        float posY = player.getPosition().y;
 
         BodyDef crystalDef = new BodyDef();
         crystalDef.type = BodyDef.BodyType.StaticBody;
 
-        float x = random.nextInt((int) (RADIUS * 2)) - RADIUS;
-        double maxY = Math.sqrt((RADIUS*RADIUS) - (x*x));
+        float x = random.nextInt(195) + 55;
+
+        if(!random.nextBoolean()) {
+            x *= -1;
+        }
+
+        x += posX;
+
+        double maxY = Math.sqrt((RADIUS*RADIUS) - (Math.abs(x-posX) * Math.abs(x-posX)));
 
         try {
-            float y = (float) (random.nextInt((int) (maxY * 2)) - maxY);
+            float y = (float) (random.nextInt((int) (maxY * 2)) - maxY) + posY;
             crystalDef.position.set(x, y);
         }catch (Exception e) {
         }
@@ -193,9 +214,9 @@ public class BattleWorld implements IWorld {
         circle.dispose();
     }
 
+    //Создает кристаллы, в указанном радиусе вокруг указанной точки
     @Override
-    public void createCrystal(float posX, float posY) {
-        float RADIUS = 33;
+    public void createCrystal(float posX, float posY, float RADIUS) {
 
         BodyDef crystalDef = new BodyDef();
         crystalDef.type = BodyDef.BodyType.StaticBody;
@@ -335,7 +356,7 @@ public class BattleWorld implements IWorld {
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = pol;
             fixtureDef.density = 5f;
-            bodyPol.createFixture(fixtureDef).setUserData("trap");
+            bodyPol.createFixture(fixtureDef).setUserData("trap_edge");
 
             pol.dispose();
 
@@ -398,7 +419,7 @@ public class BattleWorld implements IWorld {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = polygonShape;
         fixtureDef.density = 5f;
-        bodyPol.createFixture(fixtureDef).setUserData("trap");
+        bodyPol.createFixture(fixtureDef).setUserData("trap_cross");
 
         //Создаем вторую часть креста
         vertices[0] = new Vector2(width,width);
@@ -408,7 +429,7 @@ public class BattleWorld implements IWorld {
 
         polygonShape.set(vertices);
         fixtureDef.shape = polygonShape;
-        bodyPol.createFixture(fixtureDef).setUserData("trap");
+        bodyPol.createFixture(fixtureDef).setUserData("trap_cross");
 
         //Создаем тертью часть креста
         vertices[0] = new Vector2(width,-width);
@@ -418,7 +439,7 @@ public class BattleWorld implements IWorld {
 
         polygonShape.set(vertices);
         fixtureDef.shape = polygonShape;
-        bodyPol.createFixture(fixtureDef).setUserData("trap");
+        bodyPol.createFixture(fixtureDef).setUserData("trap_cross");
 
         //Создаем четвертую часть креста
         vertices[0] = new Vector2(-width,-width);
@@ -428,7 +449,7 @@ public class BattleWorld implements IWorld {
 
         polygonShape.set(vertices);
         fixtureDef.shape = polygonShape;
-        bodyPol.createFixture(fixtureDef).setUserData("trap");
+        bodyPol.createFixture(fixtureDef).setUserData("trap_cross");
 
         polygonShape.dispose();
 
@@ -466,7 +487,7 @@ public class BattleWorld implements IWorld {
         fixtureDef.shape = circle;
         fixtureDef.density = 0.5f;
         fixtureDef.restitution = 2f;
-        circleKillerBody.createFixture(fixtureDef).setUserData("trap");
+        circleKillerBody.createFixture(fixtureDef).setUserData("trap_circle");
 
         circle.dispose();
     }
@@ -528,6 +549,11 @@ public class BattleWorld implements IWorld {
     @Override
     public List<ITrapRevolute> getTraps() {
         return this.trapsRevolute;
+    }
+
+    @Override
+    public List<CircleKiller> getCircleTraps() {
+        return this.circleKillers;
     }
 
     @Override

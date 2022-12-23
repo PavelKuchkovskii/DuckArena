@@ -55,8 +55,8 @@ public class CustomListener implements ContactListener {
                 world.addBang(new Bang(contact.getFixtureB().getBody().getPosition(), BattleScreen.bang));
             }
 
-            //С ловушками
-            else if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("trap")) {
+            //С ЛЮБЫМИ ловушками
+            else if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("trap")) {
                 //Уничтожаем солдата
                 world.addToDestroy(contact.getFixtureA().getBody());
                 world.addBang(new Bang(contact.getFixtureA().getBody().getPosition(), BattleScreen.bang));
@@ -81,8 +81,8 @@ public class CustomListener implements ContactListener {
             }
         }
 
-        //Если ловушка сталкивается
-        else if(contact.getFixtureA().getUserData() != null && contact.getFixtureA().getUserData().equals("trap")) {
+        //Если ЛЮБАЯ ловушка сталкивается
+        else if(contact.getFixtureA().getUserData() != null && ((String) contact.getFixtureA().getUserData()).contains("trap")) {
             //С СОЛДАТАМИ
             if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("soldier")) {
                 //Уничтожаем солдата
@@ -107,8 +107,8 @@ public class CustomListener implements ContactListener {
                 //Добавляем кристал в список на уничтожение
                 world.addToDestroy(contact.getFixtureA().getBody());
             }
-            //С ловушками
-            else if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("trap")) {
+            //С ЛЮБОЙ ловушкой
+            else if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("trap")) {
                 //Ставим метку что Кристалл опасный
                 ((Crystal) contact.getFixtureA().getBody().getUserData()).setDanger(true);
             }
@@ -125,11 +125,21 @@ public class CustomListener implements ContactListener {
 
         //Если кристалл перестает сталкиваться
         if(contact.getFixtureA().getUserData() != null && contact.getFixtureA().getUserData().equals("crystal")) {
-            //С ловушками
-            if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("trap")) {
-                //Ставим метку что Кристалл безопасный
-                ((Crystal) contact.getFixtureA().getBody().getUserData()).setDanger(false);
+            //С ЛЮБОЙ ловушкой
+            if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("trap")) {
+
+                //Если c шаром, то ставим метку что он безопасен
+                if (contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("circle")) {
+                    //Ставим метку что Кристалл безопасный
+                    ((Crystal) contact.getFixtureA().getBody().getUserData()).setDanger(false);
+                }
+                //Иначе удаялем кристалл
+                else {
+                    //Добавляем кристал в список на уничтожение
+                    world.addToDestroy(contact.getFixtureA().getBody());
+                }
             }
+
             //С БАШНЯМИ
             else if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("tower")) {
                 //Ставим метку что Кристалл безопасный
@@ -137,12 +147,22 @@ public class CustomListener implements ContactListener {
             }
         }
 
-        //Если ловушка перестает сталкиваться
-        else if(contact.getFixtureA().getUserData() != null && contact.getFixtureA().getUserData().equals("trap")) {
+        //Если любая ловушка перестает сталкиваться
+        else if(contact.getFixtureA().getUserData() != null && ((String) contact.getFixtureA().getUserData()).contains("trap")) {
             //С КРИСТАЛЛАМИ
             if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("crystal")) {
-                //Ставим метку что Кристалл безопасный
-                ((Crystal) contact.getFixtureB().getBody().getUserData()).setDanger(false);
+
+                //Если ловушка шар
+                if(contact.getFixtureA().getUserData() != null && ((String) contact.getFixtureA().getUserData()).contains("circle")) {
+                    //Ставим метку что Кристалл безопасный
+                    ((Crystal) contact.getFixtureB().getBody().getUserData()).setDanger(false);
+                }
+                //Иначе удаялем кристалл
+                else {
+                    //Добавляем кристал в список на уничтожение
+                    world.addToDestroy(contact.getFixtureB().getBody());
+                }
+
             }
         }
 

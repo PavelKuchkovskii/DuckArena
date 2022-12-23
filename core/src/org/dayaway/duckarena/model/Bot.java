@@ -29,6 +29,8 @@ public class Bot implements IBot {
     private boolean escape;
     private boolean discovered;
 
+    private Long timeStartGoal;
+
     private final List<Soldier> soldiers;
 
     public Bot(Body body, TextureRegion textureRegion) {
@@ -138,6 +140,14 @@ public class Bot implements IBot {
     @Override
     public void setGoal(IActor actor) {
         this.goal = actor;
+    }
+
+    public Long getTimeStartGoal() {
+        return timeStartGoal;
+    }
+
+    public void setTimeStartGoal(Long timeStartGoal) {
+        this.timeStartGoal = timeStartGoal;
     }
 
     @Override

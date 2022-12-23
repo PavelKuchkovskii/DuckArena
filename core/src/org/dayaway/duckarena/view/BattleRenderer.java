@@ -70,8 +70,6 @@ public class BattleRenderer implements IRenderer {
 
         //renderer.render(world.getWorld(), camera.combined);
 
-
-
         for (ITrapRevolute trap : world.getTraps()) {
 
             if(trap.getJoint().isLimitEnabled()) {

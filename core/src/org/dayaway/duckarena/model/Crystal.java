@@ -15,7 +15,7 @@ public class Crystal implements IActor {
     private final TextureRegion textureRegion;
 
     private final long experience;
-    private boolean danger = true;
+    private boolean danger = false;
 
     public Crystal(Body body, TextureRegion textureRegion, long experience) {
         this.body = body;

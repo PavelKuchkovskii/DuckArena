@@ -4,6 +4,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 
 import org.dayaway.duckarena.model.Bot;
+import org.dayaway.duckarena.model.CircleKiller;
 import org.dayaway.duckarena.model.Crystal;
 import org.dayaway.duckarena.model.Tower;
 
@@ -40,13 +41,15 @@ public interface IWorld {
 
     void createCrystal();
 
-    void createCrystal(float posX, float posY);
+    void createCrystal(float posX, float posY, float RADIUS);
 
     List<ISoldier> getSoldiers();
 
     boolean isExist(Body body);
 
     List<ITrapRevolute> getTraps();
+
+    List<CircleKiller> getCircleTraps();
 
     List<IBang> getBangs();
 
