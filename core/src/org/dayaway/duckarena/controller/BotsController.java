@@ -115,13 +115,14 @@ public class BotsController {
 
     }
 
+    //Меняем направление движения в зависимости от наличия опасных мест
     private Vector2 rule2(Bot bot) {
         Vector2 c = new Vector2(0,0);
 
         for (ITrapRevolute trap : world.getTraps()) {
             if(getVector(bot.getPosition(), trap.getPosition()) < 60) {
 
-                if(bot.getPosition().x < trap.getPosition().x) {
+                /*if(bot.getPosition().x < trap.getPosition().x) {
                     c.x -= 2000;
                 }
                 else {
@@ -133,14 +134,17 @@ public class BotsController {
                 }
                 else {
                     c.y += 2000;
-                }
+                }*/
+
+                c.x = bot.getPosition().x - trap.getPosition().x;
+                c.y = bot.getPosition().y - trap.getPosition().y;
             }
 
         }
         for (CircleKiller trap : world.getCircleTraps()) {
             if(getVector(bot.getPosition(), trap.getPosition()) < 50) {
 
-                if(bot.getPosition().x < trap.getPosition().x) {
+                /*if(bot.getPosition().x < trap.getPosition().x) {
                     c.x -= 2000;
                 }
                 else {
@@ -152,7 +156,10 @@ public class BotsController {
                 }
                 else {
                     c.y += 2000;
-                }
+                }*/
+
+                c.x = bot.getPosition().x - trap.getPosition().x;
+                c.y = bot.getPosition().y - trap.getPosition().y;
             }
         }
         return c;
@@ -222,6 +229,7 @@ public class BotsController {
         }
     }
 
+    //Получаем расстояние от обкъета1 до объекта2
     //v1 - bot
     //v2 - goal
     float getVector(Vector2 vector1, Vector2 vector2) {

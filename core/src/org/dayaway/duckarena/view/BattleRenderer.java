@@ -28,7 +28,7 @@ public class BattleRenderer implements IRenderer {
         this.world = world;
         this.camera = new OrthographicCamera(100, 100 * ((float) Gdx.graphics.getHeight()/Gdx.graphics.getWidth()));
         this.camera.position.set(camera.viewportWidth/2f, camera.viewportHeight/2f, 0);
-        //camera.zoom +=5;
+        camera.zoom +=5;
 
         this.exp = new BitmapFont();
         this.exp.getData().setScale(0.2f);
@@ -39,8 +39,8 @@ public class BattleRenderer implements IRenderer {
     public void render(float dt) {
         clearScreen();
 
-        camera.position.set(world.getPlayer().getPosition().x, world.getPlayer().getPosition().y, 0);
-        //camera.position.set(world.getBots().get(0).getPosition().x, world.getBots().get(0).getPosition().y, 0);
+        //camera.position.set(world.getPlayer().getPosition().x, world.getPlayer().getPosition().y, 0);
+        camera.position.set(world.getBots().get(0).getPosition().x, world.getBots().get(0).getPosition().y, 0);
         //camera.position.set(0,0,0);
 
         camera.update();
@@ -68,7 +68,7 @@ public class BattleRenderer implements IRenderer {
 
         batch.end();
 
-        //renderer.render(world.getWorld(), camera.combined);
+        renderer.render(world.getWorld(), camera.combined);
 
         for (ITrapRevolute trap : world.getTraps()) {
 

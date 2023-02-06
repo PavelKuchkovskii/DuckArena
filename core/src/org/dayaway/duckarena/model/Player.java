@@ -106,6 +106,16 @@ public class Player implements IPlayer {
         levels.pop();
     }
 
+    @Override
+    public float getRadius() {
+        return 0;
+    }
+
+    @Override
+    public void changMassRadius() {
+
+    }
+
     public void initLevels() {
         this.levels = new Stack<>();
         levels.add(new Level(10));

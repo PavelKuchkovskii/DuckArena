@@ -134,6 +134,14 @@ public class BattleWorld implements IWorld {
         fixtureDef.isSensor = true;
         playerBody.createFixture(fixtureDef).setUserData("player_sensor");
 
+        circle = new CircleShape();
+        circle.setRadius(1f);
+
+        fixtureDef = new FixtureDef();
+        fixtureDef.shape = circle;
+        fixtureDef.isSensor = true;
+        playerBody.createFixture(fixtureDef).setUserData("player_mass");
+
         circle.dispose();
     }
 

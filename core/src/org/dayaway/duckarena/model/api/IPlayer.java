@@ -27,4 +27,7 @@ public interface IPlayer extends IActor{
 
     void nextLevel();
 
+    float getRadius();
+
+    void changMassRadius();
 }
