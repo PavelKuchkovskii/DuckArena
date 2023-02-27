@@ -1,11 +1,13 @@
 package org.dayaway.duckarena.controller;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Fixture;
 
 import org.dayaway.duckarena.controller.api.IController;
 import org.dayaway.duckarena.model.Bot;
 import org.dayaway.duckarena.model.CircleKiller;
 import org.dayaway.duckarena.model.Crystal;
+import org.dayaway.duckarena.model.Soldier;
 import org.dayaway.duckarena.model.api.IActor;
 import org.dayaway.duckarena.model.api.IPlayer;
 import org.dayaway.duckarena.model.api.ITrapRevolute;
@@ -38,6 +40,7 @@ public class BotsController {
         expBot();
 
         updateChanges();
+
     }
 
     //Проверяем набрал ли Bot достаточно опыта и если да, переводим на след уровень
@@ -50,8 +53,28 @@ public class BotsController {
 
                 world.createSoldier(bot);
             }
+
+            changeMass(bot);
         }
 
+    }
+
+    private void changeMass(Bot bot) {
+        //Увеличиваем радиус сенсора
+        for (Fixture fixture : bot.getBody().getFixtureList()) {
+            if(fixture.getUserData().equals("bot_mass")) {
+                float S = 0;
+                float radius;
+
+                for (int i = 0; i < bot.getSoldiers().size(); i++) {
+                    S += (3.5f * 2) * (3.5f * 2);
+                }
+
+                radius = (float) Math.sqrt(S/Math.PI);
+                fixture.getShape().setRadius(radius);
+                bot.setMassRadius(radius);
+            }
+        }
     }
 
     private void move() {
@@ -226,6 +249,7 @@ public class BotsController {
                     world.createSoldier(bot);
                 }
             }
+
         }
     }
 

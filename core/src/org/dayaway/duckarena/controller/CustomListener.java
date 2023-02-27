@@ -33,7 +33,7 @@ public class CustomListener implements ContactListener {
                 world.addToDestroy(contact.getFixtureA().getBody());
 
                 //Добавляем анимацию взрыва
-                world.addBang(new Bang(contact.getFixtureA().getBody().getPosition(), BattleScreen.bang));
+                world.addBang(new Bang(contact.getFixtureA().getBody().getPosition(), BattleScreen.textures.bang));
             }
             //С КРИСТАЛЛАМИ
             else if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("crystal")) {
@@ -51,15 +51,15 @@ public class CustomListener implements ContactListener {
                 world.addToDestroy(contact.getFixtureB().getBody());
 
                 //Добавляем анимацию взрыва на оюоих солдат
-                world.addBang(new Bang(contact.getFixtureA().getBody().getPosition(), BattleScreen.bang));
-                world.addBang(new Bang(contact.getFixtureB().getBody().getPosition(), BattleScreen.bang));
+                world.addBang(new Bang(contact.getFixtureA().getBody().getPosition(), BattleScreen.textures.bang));
+                world.addBang(new Bang(contact.getFixtureB().getBody().getPosition(), BattleScreen.textures.bang));
             }
 
             //С ЛЮБЫМИ ловушками
             else if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("trap")) {
                 //Уничтожаем солдата
                 world.addToDestroy(contact.getFixtureA().getBody());
-                world.addBang(new Bang(contact.getFixtureA().getBody().getPosition(), BattleScreen.bang));
+                world.addBang(new Bang(contact.getFixtureA().getBody().getPosition(), BattleScreen.textures.bang));
             }
         }
 
@@ -70,7 +70,7 @@ public class CustomListener implements ContactListener {
                 //Уничтожаем солдата
                 world.addToDestroy(contact.getFixtureB().getBody());
                 //Добавляем анимацию взрыва
-                world.addBang(new Bang(contact.getFixtureB().getBody().getPosition(), BattleScreen.bang));
+                world.addBang(new Bang(contact.getFixtureB().getBody().getPosition(), BattleScreen.textures.bang));
             }
 
             //С КРИСТАЛЛАМИ-НЕ РАБОТАЕТ!!!!
@@ -88,7 +88,7 @@ public class CustomListener implements ContactListener {
                 //Уничтожаем солдата
                 world.addToDestroy(contact.getFixtureB().getBody());
                 //Добавляем анимацию взрыва
-                world.addBang(new Bang(contact.getFixtureB().getBody().getPosition(), BattleScreen.bang));
+                world.addBang(new Bang(contact.getFixtureB().getBody().getPosition(), BattleScreen.textures.bang));
             }
 
             //С КРИСТАЛЛАМИ

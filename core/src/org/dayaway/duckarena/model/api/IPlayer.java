@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface IPlayer extends IActor{
 
+    String getNickName();
+
     float getSpeed();
 
     List<Soldier> getSoldiers();
@@ -29,5 +31,5 @@ public interface IPlayer extends IActor{
 
     float getRadius();
 
-    void changMassRadius();
+    void setMassRadius(float radius);
 }

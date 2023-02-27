@@ -14,6 +14,9 @@ import java.util.Stack;
 
 public class Bot implements IBot {
 
+    private final String nickName;
+    private float radius;
+
     private final TextureRegion textureRegion;
     private final int WIDTH = 15;
     private final int HEIGHT = 15;
@@ -33,12 +36,14 @@ public class Bot implements IBot {
 
     private final List<Soldier> soldiers;
 
-    public Bot(Body body, TextureRegion textureRegion) {
+    public Bot(String nickName, Body body, TextureRegion textureRegion) {
+        this.nickName = nickName;
         this.textureRegion = textureRegion;
         this.velocity = new Vector2(0,0);
         this.body = body;
         this.soldiers = new ArrayList<>();
         initLevels();
+        this.radius = 1;
     }
 
     @Override
@@ -59,6 +64,11 @@ public class Bot implements IBot {
     @Override
     public Vector2 getPosition() {
         return this.body.getPosition();
+    }
+
+    @Override
+    public String getNickName() {
+        return this.nickName;
     }
 
     @Override
@@ -113,12 +123,12 @@ public class Bot implements IBot {
 
     @Override
     public float getRadius() {
-        return 0;
+        return this.radius;
     }
 
     @Override
-    public void changMassRadius() {
-
+    public void setMassRadius(float radius) {
+        this.radius = radius;
     }
 
     public void initLevels() {

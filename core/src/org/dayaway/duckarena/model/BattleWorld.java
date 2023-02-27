@@ -10,7 +10,6 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
-import com.badlogic.gdx.utils.Array;
 
 import org.dayaway.duckarena.model.api.IActor;
 import org.dayaway.duckarena.model.api.IBang;
@@ -113,7 +112,7 @@ public class BattleWorld implements IWorld {
 
         Body playerBody = world.createBody(playerDef);
 
-        player = new Player(playerBody, BattleScreen.actorPeace);
+        player = new Player("nickName", playerBody, BattleScreen.textures.getRandomActor());
         playerBody.setUserData(playerBody);
 
         CircleShape circle = new CircleShape();
@@ -202,7 +201,7 @@ public class BattleWorld implements IWorld {
 
         Body crystalBody = world.createBody(crystalDef);
         //Создаем новый кристалл
-        Crystal crystal = new Crystal(crystalBody, BattleScreen.crystal, 10);
+        Crystal crystal = new Crystal(crystalBody, BattleScreen.textures.crystal, 10);
         crystals.add(crystal);
 
         //Присваем его физическому телу
@@ -241,7 +240,7 @@ public class BattleWorld implements IWorld {
 
         Body crystalBody = world.createBody(crystalDef);
         //Создаем новый кристалл
-        Crystal crystal = new Crystal(crystalBody, BattleScreen.crystal, 10);
+        Crystal crystal = new Crystal(crystalBody, BattleScreen.textures.crystal, 10);
         crystals.add(crystal);
 
         //Присваем его физическому телу
@@ -268,7 +267,7 @@ public class BattleWorld implements IWorld {
 
         Body towerBody = world.createBody(towerDef);
         //Создаем новый кристалл
-        Tower tower = new Tower(towerBody, BattleScreen.actorPeace);
+        Tower tower = new Tower(towerBody, BattleScreen.textures.trap);
         towers.add(tower);
 
         //Присваем его физическому телу
@@ -294,7 +293,7 @@ public class BattleWorld implements IWorld {
 
         Body botBody = world.createBody(botDef);
 
-        Bot bot = new Bot(botBody, BattleScreen.actorPeace);
+        Bot bot = new Bot("nickName", botBody, BattleScreen.textures.getRandomActor());
         bots.add(bot);
         botBody.setUserData(botBody);
 
@@ -307,6 +306,14 @@ public class BattleWorld implements IWorld {
         fixtureDef.friction = 0f;
         fixtureDef.restitution = 0f;
         botBody.createFixture(fixtureDef).setUserData("bot");
+
+        circle = new CircleShape();
+        circle.setRadius(1f);
+
+        fixtureDef = new FixtureDef();
+        fixtureDef.shape = circle;
+        fixtureDef.isSensor = true;
+        botBody.createFixture(fixtureDef).setUserData("bot_mass");
 
         circle.dispose();
 
@@ -383,7 +390,7 @@ public class BattleWorld implements IWorld {
             jointDef.maxMotorTorque = 5_000_000;
             jointDef.motorSpeed = (float) Math.toRadians(360);
 
-            this.trapsRevolute.add(new TrapEdgeMap( (RevoluteJoint) world.createJoint(jointDef), BattleScreen.trap));
+            this.trapsRevolute.add(new TrapEdgeMap( (RevoluteJoint) world.createJoint(jointDef), BattleScreen.textures.trap));
         }
 
     }
@@ -472,7 +479,7 @@ public class BattleWorld implements IWorld {
         jointDef.maxMotorTorque = 5_000_000;
         jointDef.motorSpeed = (float) Math.toRadians(360);
 
-        this.trapsRevolute.add(new TrapCrossMap( (RevoluteJoint) world.createJoint(jointDef), BattleScreen.trap_cross));
+        this.trapsRevolute.add(new TrapCrossMap( (RevoluteJoint) world.createJoint(jointDef), BattleScreen.textures.trap_cross));
 
     }
 
@@ -485,7 +492,7 @@ public class BattleWorld implements IWorld {
         Body circleKillerBody = world.createBody(circleKillerDef);
         circleKillerBody.setLinearVelocity(x*2, y*2);
 
-        CircleKiller circleKiller = new CircleKiller(circleKillerBody, BattleScreen.crystal);
+        CircleKiller circleKiller = new CircleKiller(circleKillerBody, BattleScreen.textures.crystal);
         circleKillers.add(circleKiller);
 
         CircleShape circle = new CircleShape();
@@ -641,7 +648,7 @@ public class BattleWorld implements IWorld {
         //Создаем тело в мире
         Body arenaBody = world.createBody(arenaDef);
         //Добавляем арену в список арен и присваиваем ее телу
-        Arena arena = new Arena(arenaBody, BattleScreen.map);
+        Arena arena = new Arena(arenaBody, BattleScreen.textures.map);
         this.arena = arena;
         arenaBody.setUserData(arena);
 

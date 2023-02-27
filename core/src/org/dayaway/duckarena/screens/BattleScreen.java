@@ -1,8 +1,5 @@
 package org.dayaway.duckarena.screens;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
 import org.dayaway.duckarena.controller.BattleController;
 import org.dayaway.duckarena.controller.api.IController;
 import org.dayaway.duckarena.model.BattleWorld;
@@ -16,12 +13,7 @@ public class BattleScreen implements IGameScreen {
     private final IWorld world;
     private final IRenderer renderer;
     private final IController controller;
-    public static final TextureRegion actorPeace = new TextureRegion(new Texture("walk.png"));
-    public static final TextureRegion map = new TextureRegion(new Texture("WB.png"));
-    public static final TextureRegion crystal = new TextureRegion(new Texture("crystal.png"));
-    public static final TextureRegion trap = new TextureRegion(new Texture("trap_adg_map.png"));
-    public static final TextureRegion trap_cross = new TextureRegion(new Texture("trap_cross.png"));
-    public static final TextureRegion bang = new TextureRegion(new Texture("bang.png"));
+    public static TexturesBattleScreen textures = new TexturesBattleScreen();
 
     public BattleScreen() {
         this.world = new BattleWorld();
@@ -37,6 +29,11 @@ public class BattleScreen implements IGameScreen {
     @Override
     public void update(float dt) {
         controller.update(dt);
+    }
+
+    @Override
+    public TexturesBattleScreen getTextures() {
+        return textures;
     }
 
     @Override

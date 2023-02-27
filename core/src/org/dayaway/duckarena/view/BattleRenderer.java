@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 
+import org.dayaway.duckarena.model.Bot;
 import org.dayaway.duckarena.model.api.ITrapRevolute;
 import org.dayaway.duckarena.view.Util.Box2DCustomDebugRenderer;
 import org.dayaway.duckarena.model.api.IActor;
@@ -19,16 +20,16 @@ public class BattleRenderer implements IRenderer {
     private final OrthographicCamera camera;
     private final IWorld world;
 
-    Box2DCustomDebugRenderer renderer = new Box2DCustomDebugRenderer();
+    private final static Box2DCustomDebugRenderer renderer = new Box2DCustomDebugRenderer();
 
     private final BitmapFont exp;
 
     public BattleRenderer(IWorld world) {
-        this.batch = new SpriteBatch(5000);
+        this.batch = new SpriteBatch(2000);
         this.world = world;
         this.camera = new OrthographicCamera(100, 100 * ((float) Gdx.graphics.getHeight()/Gdx.graphics.getWidth()));
         this.camera.position.set(camera.viewportWidth/2f, camera.viewportHeight/2f, 0);
-        camera.zoom +=5;
+        //camera.zoom +=5;
 
         this.exp = new BitmapFont();
         this.exp.getData().setScale(0.2f);
@@ -39,8 +40,11 @@ public class BattleRenderer implements IRenderer {
     public void render(float dt) {
         clearScreen();
 
-        //camera.position.set(world.getPlayer().getPosition().x, world.getPlayer().getPosition().y, 0);
-        camera.position.set(world.getBots().get(0).getPosition().x, world.getBots().get(0).getPosition().y, 0);
+        //Debug render
+        //renderer.render(world.getWorld(), camera.combined);
+
+        camera.position.set(world.getPlayer().getPosition().x, world.getPlayer().getPosition().y, 0);
+        //camera.position.set(world.getBots().get(0).getPosition().x, world.getBots().get(0).getPosition().y, 0);
         //camera.position.set(0,0,0);
 
         camera.update();
@@ -62,13 +66,18 @@ public class BattleRenderer implements IRenderer {
         /*exp.draw(batch,"Exp: " + world.getPlayer().getExp() + "/" + world.getPlayer().getLevel().getExp(), camera.unproject(new Vector3(0,0,0)).x,
                 camera.unproject(new Vector3(0,0,0)).y);*/
 
+        //Рисуем Ники
+        for (Bot bot : world.getBots()) {
+            exp.draw(batch, bot.getNickName(), bot.getBody().getPosition().x - 7, bot.getPosition().y + bot.getRadius() + 3);
+        }
+            exp.draw(batch, getWorld().getPlayer().getNickName(), getWorld().getPlayer().getBody().getPosition().x - 7, getWorld().getPlayer().getPosition().y + getWorld().getPlayer().getRadius() + 3);
+
+
         exp.draw(batch,"S: " + world.getSoldiers().size()  + "\n" +
                 "F: " + Gdx.graphics.getFramesPerSecond(), camera.unproject(new Vector3(0,0,0)).x,
                 camera.unproject(new Vector3(0,0,0)).y);
 
         batch.end();
-
-        renderer.render(world.getWorld(), camera.combined);
 
         for (ITrapRevolute trap : world.getTraps()) {
 
@@ -89,9 +98,9 @@ public class BattleRenderer implements IRenderer {
         System.out.println("CRYSTALS: " + world.getCrystals().size());
         System.out.println("FPS: " + Gdx.graphics.getFramesPerSecond());*/
 
-        /*System.out.println(batch.renderCalls);
+        System.out.println(batch.renderCalls);
         System.out.println();
-        System.out.println(batch.maxSpritesInBatch);*/
+        System.out.println(batch.maxSpritesInBatch);
     }
 
     @Override
