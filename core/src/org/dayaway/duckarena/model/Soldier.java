@@ -15,14 +15,14 @@ public class Soldier implements ISoldier {
     private final int HEIGHT = 7;
 
     private final Body body;
-    private final TextureRegion peaceTexture;
+    private final TextureRegion texture;
 
     private TextureRegion frame;
 
-    public Soldier(Body body, IPlayer player, TextureRegion peaceTexture) {
+    public Soldier(Body body, IPlayer player, TextureRegion texture) {
         this.body = body;
         this.player = player;
-        this.peaceTexture = peaceTexture;
+        this.texture = texture;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class Soldier implements ISoldier {
 
     @Override
     public TextureRegion getTexture() {
-        return this.peaceTexture;
+        return this.texture;
     }
 
     @Override

@@ -16,7 +16,6 @@ public class BattleController implements IController {
 
     private final PlayerController playerController;
     private final SoldiersController soldiersController;
-    private final TowersController towersController;
     private final CrystalsController crystalsController;
 
     private final BotsController botsController;
@@ -40,7 +39,6 @@ public class BattleController implements IController {
 
         this.playerController = new PlayerController(world);
         this.soldiersController = new SoldiersController(world);
-        this.towersController = new TowersController(world);
         this.crystalsController = new CrystalsController(world);
 
         this.botsController = new BotsController(this);
@@ -65,8 +63,6 @@ public class BattleController implements IController {
 
         soldiersController.update(dt);
 
-        towersController.update(dt);
-
         crystalsController.update(dt);
 
         botsController.update(dt);
@@ -84,7 +80,6 @@ public class BattleController implements IController {
     }
 
     public void worldStep(float dt) {
-
         world.getWorld().step(dt>(1/40f) && dt < 0.1f ? dt : STEP, 6, 2);
     }
 

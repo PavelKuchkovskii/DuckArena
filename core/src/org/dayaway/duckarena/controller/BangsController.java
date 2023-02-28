@@ -24,14 +24,9 @@ public class BangsController {
 
         for (IBang bang : bangs) {
             bang.setFrame(bang.getAnimation().getFrame());
-        }
-
-        for (IBang bang : bangs) {
             bang.getAnimation().update(dt);
         }
-
         remove();
-
     }
 
     private void remove() {

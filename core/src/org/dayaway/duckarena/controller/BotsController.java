@@ -33,69 +33,58 @@ public class BotsController {
     }
 
     public void update(float dt) {
-        decide();
 
-        move();
+        for (Bot bot : bots) {
+            decide(bot);
 
-        expBot();
+            move(bot);
 
-        updateChanges();
+            expBot(bot);
+
+            updateChanges(bot);
+        }
+
 
     }
 
     //Проверяем набрал ли Bot достаточно опыта и если да, переводим на след уровень
-    public void expBot() {
+    public void expBot(Bot bot) {
 
-        for (Bot bot : bots) {
+        if(bot.getExp() >= bot.getLevel().getExp()) {
+            bot.nextLevel();
 
-            if(bot.getExp() >= bot.getLevel().getExp()) {
-                bot.nextLevel();
-
-                world.createSoldier(bot);
-            }
-
-            changeMass(bot);
+            world.createSoldier(bot);
         }
+
+        changeMass(bot);
 
     }
 
+    //Увеличиваем/уменьшаем радиус сенсора
     private void changeMass(Bot bot) {
-        //Увеличиваем радиус сенсора
-        for (Fixture fixture : bot.getBody().getFixtureList()) {
-            if(fixture.getUserData().equals("bot_mass")) {
-                float S = 0;
-                float radius;
+        float S = ((3.5f * 2) * (3.5f * 2)) * bot.getSoldiers().size();
+        float radius = (float) Math.sqrt(S/Math.PI);
 
-                for (int i = 0; i < bot.getSoldiers().size(); i++) {
-                    S += (3.5f * 2) * (3.5f * 2);
-                }
-
-                radius = (float) Math.sqrt(S/Math.PI);
-                fixture.getShape().setRadius(radius);
-                bot.setMassRadius(radius);
-            }
-        }
+        bot.getRadiusFixture().getShape().setRadius(radius);
+        bot.setMassRadius(radius);
     }
 
-    private void move() {
+    private void move(Bot bot) {
 
         Vector2 v1;
         Vector2 v2;
 
-        for (Bot bot : bots) {
+        if(bot.getGoal() != null) {
+            v1 = cohesion(bot);
+            v2 = rule2(bot);
 
-            if(bot.getGoal() != null) {
-                v1 = cohesion(bot);
-                v2 = rule2(bot);
+            float x = bot.getBody().getLinearVelocity().x + v1.x + v2.x;
+            float y = bot.getBody().getLinearVelocity().y + v1.y + v2.y;
 
-                float x = bot.getBody().getLinearVelocity().x + v1.x + v2.x;
-                float y = bot.getBody().getLinearVelocity().y + v1.y + v2.y;
-
-                bot.getBody().setLinearVelocity(correctionVelocity(x,y));
-            }
-            else {
-                bot.getBody().setLinearVelocity(0,0);
-            }
+            bot.getBody().setLinearVelocity(correctionVelocity(x,y));
+        }
+        else {
+            bot.getBody().setLinearVelocity(0,0);
         }
 
     }
@@ -188,68 +177,61 @@ public class BotsController {
         return c;
     }
 
-    private void decide() {
+    private void decide(Bot bot) {
 
-        for (Bot bot : bots) {
+        if(bot.getGoal() == null) {
+            List<VectorGoal> goals = new ArrayList<>();
 
-            if(bot.getGoal() == null) {
-                List<VectorGoal> goals = new ArrayList<>();
+            if(!world.getCrystals().isEmpty()) {
 
-                if(!world.getCrystals().isEmpty()) {
-                    for (Crystal crystal : world.getCrystals()) {
-                        //Если кристалл безопасный отслеживаем расстояние до него
-                        if(!crystal.isDanger()) {
-                            goals.add(new VectorGoal(getVector(bot.getPosition(), crystal.getPosition()), crystal));
-                        }
-
+                for (Crystal crystal : world.getCrystals()) {
+                    //Если кристалл безопасный отслеживаем расстояние до него
+                    if(!crystal.isDanger()) {
+                        goals.add(new VectorGoal(getVector(bot.getPosition(), crystal.getPosition()), crystal));
                     }
 
-                    Collections.sort(goals);
+                }
 
-                    if(!goals.isEmpty()) {
-                        bot.setGoal(goals.get(0).getGoal());
-                        bot.setTimeStartGoal(System.currentTimeMillis());
-                    }
+                Collections.sort(goals);
+
+                if(!goals.isEmpty()) {
+                    bot.setGoal(goals.get(0).getGoal());
+                    bot.setTimeStartGoal(System.currentTimeMillis());
                 }
             }
-            else {
-                //Если в мире нет Body цели, то цель равна null
-                if(bot.getGoal().getBody().getUserData() == null
-                        || !world.isExist(bot.getGoal().getBody())
-                        || ((Crystal) bot.getGoal().getBody().getUserData()).isDanger()) {
-                    bot.setGoal(null);
-                }
-                else if((System.currentTimeMillis() - bot.getTimeStartGoal()) > 1000) {
-                    ((Crystal) bot.getGoal()).setDanger(true);
-                    bot.setGoal(null);
-                }
+        }
+        else {
+            //Если в мире нет Body цели, то цель равна null
+            if(bot.getGoal().getBody().getUserData() == null
+                    || !world.isExist(bot.getGoal().getBody())
+                    || ((Crystal) bot.getGoal().getBody().getUserData()).isDanger()) {
+                bot.setGoal(null);
             }
-
-
+            else if((System.currentTimeMillis() - bot.getTimeStartGoal()) > 1000) {
+                ((Crystal) bot.getGoal()).setDanger(true);
+                bot.setGoal(null);
+            }
         }
     }
 
-    private void updateChanges() {
+    private void updateChanges(Bot bot) {
 
-        for (Bot bot : bots) {
-            //Если у бота закончились солдаты, телепортируем центр масс в другое место и добавляем ему новых солдат
-            if(bot.getSoldiers().size() == 0) {
-                //Если у Игрока еще есть солдаты
-                if(!player.getSoldiers().isEmpty()) {
-                    //на месте гибели бота добавляем кристаллы
-                    for (int i = 0; i < 50; i++) {
-                        world.createCrystal(bot.getBody().getPosition().x, bot.getBody().getPosition().y, 33);
-                    }
-                }
-
-                bot.getBody().setTransform(new Vector2(random.nextInt(600)-300, random.nextInt(600)-300),0);
-                bot.setGoal(null);
-
-                for (int i = 0; i < player.getSoldiers().size(); i++) {
-                    world.createSoldier(bot);
+        //Если у бота закончились солдаты, телепортируем центр масс в другое место и добавляем ему новых солдат
+        if(bot.getSoldiers().size() == 0) {
+            //Если у Игрока еще есть солдаты
+            if(!player.getSoldiers().isEmpty()) {
+                //на месте гибели бота добавляем кристаллы
+                for (int i = 0; i < 50; i++) {
+                    world.createCrystal(bot.getBody().getPosition().x, bot.getBody().getPosition().y, 33);
                 }
             }
 
+            bot.getBody().setTransform(new Vector2(random.nextInt(600)-300, random.nextInt(600)-300),0);
+            bot.setGoal(null);
+
+            for (int i = 0; i < player.getSoldiers().size(); i++) {
+                world.createSoldier(bot);
+            }
         }
     }
 

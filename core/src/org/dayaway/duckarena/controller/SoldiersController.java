@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import org.dayaway.duckarena.controller.utils.SoldierAnimation;
 import org.dayaway.duckarena.model.Bot;
+import org.dayaway.duckarena.model.Soldier;
 import org.dayaway.duckarena.model.api.ISoldier;
 import org.dayaway.duckarena.model.api.IWorld;
 
@@ -22,33 +23,28 @@ public class SoldiersController{
         this.animation = new SoldierAnimation(6, 0.5f);
     }
 
-    public IWorld getWorld() {
-        return this.world;
-    }
-
     public void update(float dt) {
-        move_soldiers();
 
-        rotateSoldier();
+        for (ISoldier soldier : soldiers) {
+            move_soldiers(soldier);
 
-        updateChanges();
+            rotateSoldier(soldier);
+        }
 
         animation.update(dt);
     }
 
-    private void move_soldiers() {
+    private void move_soldiers(ISoldier soldier) {
 
         Vector2 v1;
 
-        for (ISoldier soldier : soldiers) {
-            v1 = cohesion(soldier);
+        v1 = cohesion(soldier);
 
-            //Сразу брали скорость каждого солдата + правила, но для большего контроля берем скорость центра масс
-            float x = soldier.getPlayer().getBody().getLinearVelocity().x + v1.x;
-            float y = soldier.getPlayer().getBody().getLinearVelocity().y + v1.y;
+        //Сразу брали скорость каждого солдата + правила, но для большего контроля берем скорость центра масс
+        float x = soldier.getPlayer().getBody().getLinearVelocity().x + v1.x;
+        float y = soldier.getPlayer().getBody().getLinearVelocity().y + v1.y;
 
-            soldier.getBody().setLinearVelocity(x,y);
-        }
+        soldier.getBody().setLinearVelocity(x,y);
 
     }
 
@@ -58,23 +54,16 @@ public class SoldiersController{
     }
 
     //В зависимости от угла движения меняю текстуру соладата
-    private void rotateSoldier() {
+    private void rotateSoldier(ISoldier soldier) {
         //Получаем угол движения центра масс
-        for (ISoldier soldier : soldiers) {
-            float angle = getAngle(soldier.getPlayer().getVelocity());
+        float angle = getAngle(soldier.getPlayer().getVelocity());
 
-            if ( (angle >= 0 && angle <= 90) || (angle > 270) ) {
-                soldier.setFrame(animation.getRightAnimation(soldier.getPlayer().getSoldiers().get(0).getTexture()));
-            }
-            else {
-                soldier.setFrame(animation.getLeftAnimation(soldier.getPlayer().getSoldiers().get(0).getTexture()));
-            }
-
+        if ( (angle >= 0 && angle <= 90) || (angle > 270) ) {
+            soldier.setFrame(animation.getRightAnimation(soldier.getTexture()));
         }
-    }
-
-    private void updateChanges() {
-
+        else {
+            soldier.setFrame(animation.getLeftAnimation(soldier.getTexture()));
+        }
     }
 
     //Получаем угол движения относительно себя

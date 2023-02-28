@@ -3,6 +3,7 @@ package org.dayaway.duckarena.model;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Fixture;
 
 import org.dayaway.duckarena.model.api.ILevel;
 import org.dayaway.duckarena.model.api.IPlayer;
@@ -15,6 +16,7 @@ public class Player implements IPlayer {
 
     private final String nickName;
     private float radius;
+    private final Fixture fRadius;
 
     private final TextureRegion textureRegion;
 
@@ -32,8 +34,9 @@ public class Player implements IPlayer {
 
     private final List<Soldier> soldiers;
 
-    public Player(String nickName, Body body, TextureRegion textureRegion) {
+    public Player(String nickName, Fixture fRadius, Body body, TextureRegion textureRegion) {
         this.nickName = nickName;
+        this.fRadius = fRadius;
         this.textureRegion = textureRegion;
         this.velocity = new Vector2(0,0);
         this.body = body;
@@ -119,6 +122,11 @@ public class Player implements IPlayer {
     @Override
     public float getRadius() {
         return this.radius;
+    }
+
+    @Override
+    public Fixture getRadiusFixture() {
+        return this.fRadius;
     }
 
     @Override

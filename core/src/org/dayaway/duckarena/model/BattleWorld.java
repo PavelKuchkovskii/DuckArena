@@ -5,6 +5,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -112,9 +113,6 @@ public class BattleWorld implements IWorld {
 
         Body playerBody = world.createBody(playerDef);
 
-        player = new Player("nickName", playerBody, BattleScreen.textures.getRandomActor());
-        playerBody.setUserData(playerBody);
-
         CircleShape circle = new CircleShape();
         circle.setRadius(1f);
 
@@ -139,7 +137,13 @@ public class BattleWorld implements IWorld {
         fixtureDef = new FixtureDef();
         fixtureDef.shape = circle;
         fixtureDef.isSensor = true;
-        playerBody.createFixture(fixtureDef).setUserData("player_mass");
+
+        Fixture fixture = playerBody.createFixture(fixtureDef);
+        fixture.setUserData("player_mass");
+
+
+        player = new Player("nickName", fixture, playerBody, BattleScreen.textures.getRandomActor());
+        playerBody.setUserData(playerBody);
 
         circle.dispose();
     }
@@ -293,10 +297,6 @@ public class BattleWorld implements IWorld {
 
         Body botBody = world.createBody(botDef);
 
-        Bot bot = new Bot("nickName", botBody, BattleScreen.textures.getRandomActor());
-        bots.add(bot);
-        botBody.setUserData(botBody);
-
         CircleShape circle = new CircleShape();
         circle.setRadius(1f);
 
@@ -313,7 +313,13 @@ public class BattleWorld implements IWorld {
         fixtureDef = new FixtureDef();
         fixtureDef.shape = circle;
         fixtureDef.isSensor = true;
-        botBody.createFixture(fixtureDef).setUserData("bot_mass");
+
+        Fixture fixture = botBody.createFixture(fixtureDef);
+        fixture.setUserData("bot_mass");
+
+        Bot bot = new Bot("nickName", fixture, botBody, BattleScreen.textures.getRandomActor());
+        bots.add(bot);
+        botBody.setUserData(botBody);
 
         circle.dispose();
 

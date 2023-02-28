@@ -35,10 +35,12 @@ public class CrystalsController {
 
     private void delete() {
         for (Crystal crystal : crystals) {
+            //Если кристалл за пределами сенсора игрока, то удаляем его
             if(getVector(crystal.getPosition(), player.getPosition()) > 250f) {
                 world.addToDestroy(crystal.getBody());
             }
-            if(getVector(crystal.getPosition(), new Vector2(0,0)) > 450f) {
+            //Если кристалл за пределами карты, удаляем его
+            else if(getVector(crystal.getPosition(), new Vector2(0,0)) > 450f) {
                 world.addToDestroy(crystal.getBody());
             }
         }

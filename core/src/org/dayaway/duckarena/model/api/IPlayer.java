@@ -2,6 +2,7 @@ package org.dayaway.duckarena.model.api;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Fixture;
 
 import org.dayaway.duckarena.model.Soldier;
 
@@ -30,6 +31,8 @@ public interface IPlayer extends IActor{
     void nextLevel();
 
     float getRadius();
+
+    Fixture getRadiusFixture();
 
     void setMassRadius(float radius);
 }
