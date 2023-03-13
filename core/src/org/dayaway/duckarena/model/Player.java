@@ -42,7 +42,7 @@ public class Player implements IPlayer {
         this.body = body;
         this.soldiers = new ArrayList<>();
         initLevels();
-        this.radius = 1;
+        this.radius = 4f;
     }
 
     @Override

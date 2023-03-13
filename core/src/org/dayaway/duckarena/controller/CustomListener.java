@@ -27,16 +27,8 @@ public class CustomListener implements ContactListener {
 
         //Если солдат сталкивается
         if(contact.getFixtureA().getUserData() != null && ((String) contact.getFixtureA().getUserData()).contains("soldier")) {
-            //С БАШНЯМИ
-            if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("tower")) {
-                //Уничтожаем солдата
-                world.addToDestroy(contact.getFixtureA().getBody());
-
-                //Добавляем анимацию взрыва
-                world.addBang(new Bang(contact.getFixtureA().getBody().getPosition(), BattleScreen.textures.bang));
-            }
             //С КРИСТАЛЛАМИ
-            else if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("crystal")) {
+            if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("crystal")) {
                 //Добавляем Player опыт из кристалла
                 ((ISoldier) contact.getFixtureA().getBody().getUserData()).getPlayer().exp(contact.getFixtureB().getBody());
                 //Добавляем кристал в список на уничтожение
@@ -60,24 +52,6 @@ public class CustomListener implements ContactListener {
                 //Уничтожаем солдата
                 world.addToDestroy(contact.getFixtureA().getBody());
                 world.addBang(new Bang(contact.getFixtureA().getBody().getPosition(), BattleScreen.textures.bang));
-            }
-        }
-
-        //Если башня сталкивается
-        else if(contact.getFixtureA().getUserData() != null && contact.getFixtureA().getUserData().equals("tower")) {
-            //С СОЛДАТАМИ
-            if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("soldier")) {
-                //Уничтожаем солдата
-                world.addToDestroy(contact.getFixtureB().getBody());
-                //Добавляем анимацию взрыва
-                world.addBang(new Bang(contact.getFixtureB().getBody().getPosition(), BattleScreen.textures.bang));
-            }
-
-            //С КРИСТАЛЛАМИ-НЕ РАБОТАЕТ!!!!
-            else if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("crystal")) {
-                //Ставим метку что Кристалл опасный
-                ((Crystal) contact.getFixtureB().getBody().getUserData()).setDanger(true);
-                System.out.println("!!!!!B!");
             }
         }
 
@@ -112,11 +86,6 @@ public class CustomListener implements ContactListener {
                 //Ставим метку что Кристалл опасный
                 ((Crystal) contact.getFixtureA().getBody().getUserData()).setDanger(true);
             }
-            //С БАШНЯМИ-НЕ РАБОТАЕТ!!!!
-            else if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("tower")) {
-                //Ставим метку что Кристалл опасный
-                ((Crystal) contact.getFixtureA().getBody().getUserData()).setDanger(true);
-            }
         }
     }
 
@@ -139,12 +108,6 @@ public class CustomListener implements ContactListener {
                     world.addToDestroy(contact.getFixtureA().getBody());
                 }
             }
-
-            //С БАШНЯМИ
-            else if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("tower")) {
-                //Ставим метку что Кристалл безопасный
-                ((Crystal) contact.getFixtureA().getBody().getUserData()).setDanger(false);
-            }
         }
 
         //Если любая ловушка перестает сталкиваться
@@ -165,15 +128,6 @@ public class CustomListener implements ContactListener {
 
             }
         }
-
-        //Если башня сталкивается
-        else if(contact.getFixtureA().getUserData() != null && contact.getFixtureA().getUserData().equals("tower")) {
-            //С КРИСТАЛЛАМИ
-            if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("crystal")) {
-                //Ставим метку что Кристалл безопасный
-                ((Crystal) contact.getFixtureB().getBody().getUserData()).setDanger(false);
-            }
-        }
     }
 
     @Override
@@ -182,28 +136,18 @@ public class CustomListener implements ContactListener {
         WorldManifold manifold = contact.getWorldManifold();
         for(int j = 0; j < manifold.getNumberOfContactPoints(); j++){
 
-            //Если Player(Центр масс) контактирует
-            if(contact.getFixtureA().getUserData() != null && contact.getFixtureA().getUserData().equals("player")){
+            //Если Player или Bot(Центр масс) контактирует
+            if(contact.getFixtureA().getUserData() != null) {
+                if(contact.getFixtureA().getUserData().equals("player") || contact.getFixtureA().getUserData().equals("bot")) {
 
-                //С солдатами или башнями или центром масс бота
-                if(contact.getFixtureB().getUserData() != null) {
-                    if(((String) contact.getFixtureB().getUserData()).contains("soldier") ||
-                            contact.getFixtureB().getUserData().equals("tower") || contact.getFixtureB().getUserData().equals("bot")) {
-                        //Отключаем этот контакт
-                        contact.setEnabled(false);
-                    }
-                }
-            }
-
-            //Если Bot(Центр масс) контактирует
-            else if(contact.getFixtureA().getUserData() != null && contact.getFixtureA().getUserData().equals("bot")){
-
-                //С солдатами или башнями
-                if(contact.getFixtureB().getUserData() != null) {
-                    if(((String) contact.getFixtureB().getUserData()).contains("soldier") ||
-                            contact.getFixtureB().getUserData().equals("tower") || contact.getFixtureB().getUserData().equals("player")) {
-                        //Отключаем этот контакт
-                        contact.setEnabled(false);
+                    if(contact.getFixtureB().getUserData() != null) {
+                        //Контактирует с солдатами или другими центрами масс
+                        if(((String) contact.getFixtureB().getUserData()).contains("soldier")
+                                || contact.getFixtureB().getUserData().equals("bot")
+                                || contact.getFixtureB().getUserData().equals("player")) {
+                            //Отключаем этот контакт
+                            contact.setEnabled(false);
+                        }
                     }
                 }
             }

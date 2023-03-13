@@ -80,7 +80,7 @@ public class BattleController implements IController {
     }
 
     public void worldStep(float dt) {
-        world.getWorld().step(dt>(1/40f) && dt < 0.1f ? dt : STEP, 6, 2);
+        world.getWorld().step(dt>(1/40f) && dt < 0.1f ? dt : STEP, 2, 2);
     }
 
 

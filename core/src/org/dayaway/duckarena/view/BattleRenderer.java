@@ -40,14 +40,13 @@ public class BattleRenderer implements IRenderer {
     public void render(float dt) {
         clearScreen();
 
-        //Debug render
-        //renderer.render(world.getWorld(), camera.combined);
-
         camera.position.set(world.getPlayer().getPosition().x, world.getPlayer().getPosition().y, 0);
         //camera.position.set(world.getBots().get(0).getPosition().x, world.getBots().get(0).getPosition().y, 0);
         //camera.position.set(0,0,0);
 
         camera.update();
+
+        camera.zoom = 1 + ((world.getPlayer().getRadius()/4f) - 1)/25f;
 
         batch.setProjectionMatrix(camera.combined);
 
@@ -94,13 +93,16 @@ public class BattleRenderer implements IRenderer {
             }
         }
 
+        //Debug render
+        //renderer.render(world.getWorld(), camera.combined);
+
         /*System.out.println("SOLDIERS: " + world.getSoldiers().size());
         System.out.println("CRYSTALS: " + world.getCrystals().size());
         System.out.println("FPS: " + Gdx.graphics.getFramesPerSecond());*/
 
-        System.out.println(batch.renderCalls);
+        /*System.out.println(batch.renderCalls);
         System.out.println();
-        System.out.println(batch.maxSpritesInBatch);
+        System.out.println(batch.maxSpritesInBatch);*/
     }
 
     @Override

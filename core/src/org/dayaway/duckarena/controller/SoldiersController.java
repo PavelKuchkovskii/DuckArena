@@ -41,16 +41,20 @@ public class SoldiersController{
         v1 = cohesion(soldier);
 
         //Сразу брали скорость каждого солдата + правила, но для большего контроля берем скорость центра масс
-        float x = soldier.getPlayer().getBody().getLinearVelocity().x + v1.x;
-        float y = soldier.getPlayer().getBody().getLinearVelocity().y + v1.y;
-
-        soldier.getBody().setLinearVelocity(x,y);
-
+        soldier.getBody().setLinearVelocity(soldier.getPlayer().getBody().getLinearVelocity().x + v1.x
+                ,soldier.getPlayer().getBody().getLinearVelocity().y + v1.y);
     }
 
     //Units try to stay as close to each other as possible
     private Vector2 cohesion(ISoldier soldier) {
-        return soldier.getPlayer().getPosition().sub(soldier.getPosition());
+        Vector2 soldierV = soldier.getPosition();
+        Vector2 playerV = soldier.getPlayer().getPosition();
+
+        if(getVector(soldierV, playerV) > soldier.getPlayer().getRadius()) {
+            return new Vector2(playerV.x - soldierV.x, playerV.y - soldierV.y);
+        }
+
+        return new Vector2(0,0);
     }
 
     //В зависимости от угла движения меняю текстуру соладата
@@ -104,6 +108,28 @@ public class SoldiersController{
         }
 
         return angle;
+    }
+
+    //Получаем расстояние от обкъета1 до объекта2
+    float getVector(Vector2 vector1, Vector2 vector2) {
+        float leg1;
+        float leg2;
+
+        if(vector1.x > vector2.x) {
+            leg1 = Math.abs(vector1.x - vector2.x);
+        }
+        else {
+            leg1 = Math.abs(vector2.x - vector1.x);
+        }
+
+        if(vector1.y > vector2.y) {
+            leg2 = Math.abs(vector1.y - vector2.y);
+        }
+        else {
+            leg2 = Math.abs(vector2.y - vector1.y);
+        }
+
+        return (float) Math.sqrt((leg1 * leg1) + (leg2 * leg2));
     }
 
 }

@@ -37,8 +37,8 @@ public class PlayerController {
 
    //Увеличиваем/уменьшаем радиус сенсора
    private void changeMass() {
-       float S = ((3.5f * 2) * (3.5f * 2)) * player.getSoldiers().size();
-       float radius = (float) Math.sqrt(S/Math.PI);
+       float S = 16f * player.getSoldiers().size();
+       float radius = (float) Math.sqrt(S);
 
        player.getRadiusFixture().getShape().setRadius(radius);
        player.setMassRadius(radius);

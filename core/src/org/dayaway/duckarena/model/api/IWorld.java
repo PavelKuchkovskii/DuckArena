@@ -23,8 +23,6 @@ public interface IWorld {
 
     IActor getArena();
 
-    List<Tower> getTowers();
-
     Set<Body> getDestroy();
 
     List<Crystal> getCrystals();

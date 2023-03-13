@@ -1,13 +1,11 @@
 package org.dayaway.duckarena.controller;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Fixture;
 
 import org.dayaway.duckarena.controller.api.IController;
 import org.dayaway.duckarena.model.Bot;
 import org.dayaway.duckarena.model.CircleKiller;
 import org.dayaway.duckarena.model.Crystal;
-import org.dayaway.duckarena.model.Soldier;
 import org.dayaway.duckarena.model.api.IActor;
 import org.dayaway.duckarena.model.api.IPlayer;
 import org.dayaway.duckarena.model.api.ITrapRevolute;
@@ -90,7 +88,10 @@ public class BotsController {
     }
 
     private Vector2 cohesion(Bot bot) {
-        return bot.getGoal().getPosition().sub(bot.getPosition());
+        Vector2 botV = bot.getPosition();
+        Vector2 goalV = bot.getGoal().getPosition();
+
+        return new Vector2(goalV.x - botV.x, goalV.y - botV.y);
     }
 
     //Корректируем скорость центра масс ботов, делаем их равными скорости плеера

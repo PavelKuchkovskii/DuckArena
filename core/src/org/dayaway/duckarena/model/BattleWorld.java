@@ -42,8 +42,6 @@ public class BattleWorld implements IWorld {
 
     private final List<Crystal> crystals;
 
-    private final List<Tower> towers;
-
     private final List<ITrapRevolute> trapsRevolute;
 
     private final List<CircleKiller> circleKillers;
@@ -58,7 +56,6 @@ public class BattleWorld implements IWorld {
         this.world = new World(new Vector2(0,0), true);
         this.actors = new ArrayList<>();
         this.crystals = new ArrayList<>();
-        this.towers = new ArrayList<>();
         this.destroy = new HashSet<>();
 
         this.soldiers = new ArrayList<>();
@@ -132,7 +129,7 @@ public class BattleWorld implements IWorld {
         playerBody.createFixture(fixtureDef).setUserData("player_sensor");
 
         circle = new CircleShape();
-        circle.setRadius(1f);
+        circle.setRadius(4f);
 
         fixtureDef = new FixtureDef();
         fixtureDef.shape = circle;
@@ -151,7 +148,7 @@ public class BattleWorld implements IWorld {
     public void createSoldier(IPlayer player) {
         BodyDef soldierDef = new BodyDef();
         soldierDef.type = BodyDef.BodyType.DynamicBody;
-        soldierDef.position.set(player.getPosition().x + random.nextInt(20) - 10, player.getPosition().y + random.nextInt(20) - 10);
+        soldierDef.position.set(player.getPosition().x + random.nextInt(30) - 15, player.getPosition().y + random.nextInt(30) - 15);
 
         Body soldierBody = world.createBody(soldierDef);
         //Создаем нового солдата
@@ -264,31 +261,6 @@ public class BattleWorld implements IWorld {
         circle.dispose();
     }
 
-    public void createTower() {
-        BodyDef towerDef = new BodyDef();
-        towerDef.type = BodyDef.BodyType.StaticBody;
-        towerDef.position.set(50, 50);
-
-        Body towerBody = world.createBody(towerDef);
-        //Создаем новый кристалл
-        Tower tower = new Tower(towerBody, BattleScreen.textures.trap);
-        towers.add(tower);
-
-        //Присваем его физическому телу
-        towerBody.setUserData(tower);
-
-        CircleShape circle = new CircleShape();
-        circle.setRadius(20f);
-
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = circle;
-        fixtureDef.density = 0f;
-        fixtureDef.friction = 0f;
-        fixtureDef.restitution = 0f;
-
-        towerBody.createFixture(fixtureDef).setUserData("tower");
-    }
-
     @Override
     public Bot createBot() {
         BodyDef botDef = new BodyDef();
@@ -308,7 +280,7 @@ public class BattleWorld implements IWorld {
         botBody.createFixture(fixtureDef).setUserData("bot");
 
         circle = new CircleShape();
-        circle.setRadius(1f);
+        circle.setRadius(4f);
 
         fixtureDef = new FixtureDef();
         fixtureDef.shape = circle;
@@ -327,7 +299,6 @@ public class BattleWorld implements IWorld {
     }
 
     public void create() {
-
         createEdgeTrap(445, 30);
         createCrossTrap(0,0);
         createCrossTrap(-150,-150);
@@ -358,7 +329,7 @@ public class BattleWorld implements IWorld {
             CircleShape circleShape = new CircleShape();
             circleShape.setRadius(2f);
 
-            bodyCircle.createFixture(circleShape, 0);
+            bodyCircle.createFixture(circleShape, 0).setUserData("trap_edge");
 
             circleShape.dispose();
 
@@ -415,7 +386,7 @@ public class BattleWorld implements IWorld {
         CircleShape circleShape = new CircleShape();
         circleShape.setRadius(2f);
 
-        bodyCircle.createFixture(circleShape, 0);
+        bodyCircle.createFixture(circleShape, 0).setUserData("trap_cross");
 
         circleShape.dispose();
 
@@ -539,11 +510,8 @@ public class BattleWorld implements IWorld {
 
         actors.addAll(trapsRevolute);
 
-        //Солдаты в конце перед башнями
+        //Солдаты в конце
         actors.addAll(soldiers);
-
-        //Добавляем башни
-        actors.addAll(towers);
 
         actors.addAll(bangs);
 
@@ -593,11 +561,6 @@ public class BattleWorld implements IWorld {
     }
 
     @Override
-    public List<Tower> getTowers() {
-        return this.towers;
-    }
-
-    @Override
     public Set<Body> getDestroy() {
         return this.destroy;
     }
@@ -619,9 +582,6 @@ public class BattleWorld implements IWorld {
 
             if(body.getUserData() instanceof Crystal) {
                 crystals.remove((Crystal) body.getUserData());
-            }
-            else if(body.getUserData() instanceof Tower) {
-                towers.remove((Tower) body.getUserData());
             }
             else if(body.getUserData() instanceof Soldier) {
                 //Получаем у солдата Player и удаляем из его списка этого солдата
