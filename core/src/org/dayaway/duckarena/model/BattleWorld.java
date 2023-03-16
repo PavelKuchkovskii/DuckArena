@@ -42,6 +42,8 @@ public class BattleWorld implements IWorld {
 
     private final List<Crystal> crystals;
 
+    private final List<Barrel> barrels;
+
     private final List<ITrapRevolute> trapsRevolute;
 
     private final List<CircleKiller> circleKillers;
@@ -56,6 +58,7 @@ public class BattleWorld implements IWorld {
         this.world = new World(new Vector2(0,0), true);
         this.actors = new ArrayList<>();
         this.crystals = new ArrayList<>();
+        this.barrels = new ArrayList<>();
         this.destroy = new HashSet<>();
 
         this.soldiers = new ArrayList<>();
@@ -98,7 +101,9 @@ public class BattleWorld implements IWorld {
             createCrystal(player.getPosition().x, player.getPosition().y, 250f);
         }
 
-        //createTower();
+        for (int i = 0; i < 10; i++) {
+            createBarrel();
+        }
 
         create();
     }
@@ -484,6 +489,62 @@ public class BattleWorld implements IWorld {
         circle.dispose();
     }
 
+    //Создает бочки, в радиусе вокруг игрока, вне видимости камеры
+    public void createBarrel() {
+        float RADIUS = 250;
+        float posX = player.getPosition().x;
+        float posY = player.getPosition().y;
+
+        BodyDef barrelDef = new BodyDef();
+        barrelDef.type = BodyDef.BodyType.StaticBody;
+
+        float x = random.nextInt(195) + 55;
+
+        if(!random.nextBoolean()) {
+            x *= -1;
+        }
+
+        x += posX;
+
+        double maxY = Math.sqrt((RADIUS*RADIUS) - (Math.abs(x-posX) * Math.abs(x-posX)));
+
+        try {
+            float y = (float) (random.nextInt((int) (maxY * 2)) - maxY) + posY;
+            barrelDef.position.set(x, y);
+        }catch (Exception e) {
+        }
+
+        Body barrelBody = world.createBody(barrelDef);
+        //Создаем новый кристалл
+        Barrel barrel = new Barrel(barrelBody, BattleScreen.textures.barrel);
+        barrels.add(barrel);
+
+        //Присваем его физическому телу
+        barrelBody.setUserData(barrel);
+
+        CircleShape circle = new CircleShape();
+        circle.setRadius(25f);
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = circle;
+        fixtureDef.density = 0f;
+        fixtureDef.friction = 0f;
+        fixtureDef.restitution = 0f;
+        fixtureDef.isSensor = true;
+
+        barrelBody.createFixture(fixtureDef).setUserData("barrel_radius");
+
+        // Create a polygon shape
+        PolygonShape groundBox = new PolygonShape();
+        // Set the polygon shape as a box which is twice the size of our view port and 20 high
+        // (setAsBox takes half-width and half-height as arguments)
+        groundBox.setAsBox(4f, 5f);
+        // Create a fixture from our polygon shape and add it to our ground body
+        barrelBody.createFixture(groundBox, 0.0f).setUserData("barrel");
+
+        circle.dispose();
+    }
+
     @Override
     public World getWorld() {
         return world;
@@ -509,6 +570,8 @@ public class BattleWorld implements IWorld {
         actors.addAll(circleKillers);
 
         actors.addAll(trapsRevolute);
+
+        actors.addAll(barrels);
 
         //Солдаты в конце
         actors.addAll(soldiers);
@@ -585,8 +648,13 @@ public class BattleWorld implements IWorld {
             }
             else if(body.getUserData() instanceof Soldier) {
                 //Получаем у солдата Player и удаляем из его списка этого солдата
-                ((Soldier) body.getUserData()).getPlayer().getSoldiers().remove((Soldier) body.getUserData());
-                this.soldiers.remove((Soldier) body.getUserData());
+                Soldier soldier = (Soldier) body.getUserData();
+
+                soldier.getPlayer().getSoldiers().remove(soldier);
+                this.soldiers.remove(soldier);
+            }
+            else if(body.getUserData() instanceof Barrel) {
+                barrels.remove((Barrel) body.getUserData());
             }
 
             world.destroyBody(body);

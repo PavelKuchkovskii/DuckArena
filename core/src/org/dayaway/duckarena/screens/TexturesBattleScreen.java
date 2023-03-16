@@ -11,14 +11,17 @@ public class TexturesBattleScreen {
 
     public final TextureRegion actorPeace = new TextureRegion(new Texture("walk.png"));
     public final TextureRegion[] actors = new TextureRegion[16];
+    public final TextureRegion[] bangs = new TextureRegion[6];
     public final TextureRegion map = new TextureRegion(new Texture("WB.png"));
     public final TextureRegion crystal = new TextureRegion(new Texture("crystal.png"));
     public final TextureRegion trap = new TextureRegion(new Texture("trap_adg_map.png"));
     public final TextureRegion trap_cross = new TextureRegion(new Texture("trap_cross.png"));
     public final TextureRegion bang = new TextureRegion(new Texture("bang.png"));
+    public final TextureRegion barrel = new TextureRegion(new Texture("barrel.png"));
 
     public TexturesBattleScreen() {
         initActors();
+        initBangs();
     }
 
     private void initActors() {
@@ -39,8 +42,21 @@ public class TexturesBattleScreen {
         actors[14] = new TextureRegion(new Texture("duck-15.png"));
         actors[15] = new TextureRegion(new Texture("duck-16.png"));
     }
-    public TextureRegion getRandomActor() {
 
+    private void initBangs() {
+        bangs[0] = new TextureRegion(new Texture("bang.png"));
+        bangs[1] = new TextureRegion(new Texture("1bang.png"));
+        bangs[2] = new TextureRegion(new Texture("2bang.png"));
+        bangs[3] = new TextureRegion(new Texture("3bang.png"));
+        bangs[4] = new TextureRegion(new Texture("4bang.png"));
+        bangs[5] = new TextureRegion(new Texture("5bang.png"));
+    }
+
+    public TextureRegion getRandomActor() {
         return actors[random.nextInt(15)];
+    }
+
+    public TextureRegion getRandomBang() {
+        return bangs[random.nextInt(6)];
     }
 }

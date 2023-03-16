@@ -25,7 +25,7 @@ public class BattleRenderer implements IRenderer {
     private final BitmapFont exp;
 
     public BattleRenderer(IWorld world) {
-        this.batch = new SpriteBatch(2000);
+        this.batch = new SpriteBatch();
         this.world = world;
         this.camera = new OrthographicCamera(100, 100 * ((float) Gdx.graphics.getHeight()/Gdx.graphics.getWidth()));
         this.camera.position.set(camera.viewportWidth/2f, camera.viewportHeight/2f, 0);

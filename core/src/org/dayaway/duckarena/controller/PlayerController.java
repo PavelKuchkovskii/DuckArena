@@ -26,7 +26,7 @@ public class PlayerController {
 
     //Проверяем набрал ли Player достаточно опыта и если да, переводим на след уровень
     public void expPlayer() {
-        if(player.getExp() >= player.getLevel().getExp()) {
+        if(player.getExp() >= player.getLevel().getExp() && player.getSoldiers().size() < 50) {
             player.nextLevel();
 
             world.createSoldier(player);

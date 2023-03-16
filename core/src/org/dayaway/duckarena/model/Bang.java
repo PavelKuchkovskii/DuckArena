@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 
 import org.dayaway.duckarena.controller.utils.BangsAnimation;
 import org.dayaway.duckarena.model.api.IBang;
+import org.dayaway.duckarena.screens.BattleScreen;
 
 public class Bang implements IBang {
 
@@ -17,10 +18,9 @@ public class Bang implements IBang {
     private TextureRegion frame;
     private final BangsAnimation animation;
 
-
-    public Bang(Vector2 position, TextureRegion textureRegion) {
+    public Bang(Vector2 position) {
         this.position = new Vector2(position);
-        this.textureRegion = textureRegion;
+        this.textureRegion = BattleScreen.textures.getRandomBang();
         this.animation = new BangsAnimation(5, 0.5f, textureRegion);
     }
 

@@ -48,7 +48,7 @@ public class BotsController {
     //Проверяем набрал ли Bot достаточно опыта и если да, переводим на след уровень
     public void expBot(Bot bot) {
 
-        if(bot.getExp() >= bot.getLevel().getExp()) {
+        if(bot.getExp() >= bot.getLevel().getExp() && bot.getSoldiers().size() < 50) {
             bot.nextLevel();
 
             world.createSoldier(bot);
