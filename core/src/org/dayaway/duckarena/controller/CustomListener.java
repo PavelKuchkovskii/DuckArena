@@ -128,11 +128,8 @@ public class CustomListener implements ContactListener {
                 //Если солдат сталкивается
                 else if(contact.getFixtureA().getUserData() != null && ((String) contact.getFixtureA().getUserData()).contains("soldier")) {
 
-                    if(contact.getFixtureA().getUserData().equals(world.getPlayer() + "soldier")) {
-                        contact.setEnabled(false);
-                    }
                     //С ДРУГИМИ СОЛДАТАМИ
-                    else if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("soldier")
+                    if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("soldier")
                             && !contact.getFixtureA().getUserData().equals(contact.getFixtureB().getUserData())) {
                         contact.setEnabled(false);
                         //Уничтожаем солдата
@@ -147,12 +144,9 @@ public class CustomListener implements ContactListener {
 
                 //Если ЛЮБАЯ ловушка сталкивается
                 else if(contact.getFixtureA().getUserData() != null && ((String) contact.getFixtureA().getUserData()).contains("trap")) {
-                    if(contact.getFixtureB().getUserData().equals(world.getPlayer() + "soldier")) {
-                        contact.setEnabled(false);
-                    }
 
                     //С СОЛДАТАМИ
-                    else if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("soldier")) {
+                    if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("soldier")) {
                         contact.setEnabled(false);
                         //Уничтожаем солдата
                         world.addToDestroy(contact.getFixtureB().getBody());
