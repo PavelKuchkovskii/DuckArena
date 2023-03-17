@@ -5,6 +5,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
 import org.dayaway.duckarena.model.api.IBarrel;
+import org.dayaway.duckarena.model.api.ISoldier;
+
+import java.util.HashSet;
+import java.util.Set;
+
 
 public class Barrel implements IBarrel {
 
@@ -17,9 +22,12 @@ public class Barrel implements IBarrel {
     private boolean active;
     private boolean explosion;
 
+    private Set<ISoldier> soldiers;
+
     public Barrel(Body body, TextureRegion textureRegion) {
         this.body = body;
         this.textureRegion = textureRegion;
+        this.soldiers = new HashSet<>();
     }
 
     @Override
@@ -74,5 +82,20 @@ public class Barrel implements IBarrel {
     @Override
     public boolean isExplosion() {
         return this.explosion;
+    }
+
+    @Override
+    public Set<ISoldier> getSoldiers() {
+        return this.soldiers;
+    }
+
+    @Override
+    public void addSoldier(ISoldier soldier) {
+        this.soldiers.add(soldier);
+    }
+
+    @Override
+    public void removeSoldier(ISoldier soldier) {
+        this.soldiers.remove(soldier);
     }
 }

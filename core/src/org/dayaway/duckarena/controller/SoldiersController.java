@@ -50,7 +50,7 @@ public class SoldiersController{
         Vector2 soldierV = soldier.getPosition();
         Vector2 playerV = soldier.getPlayer().getPosition();
 
-        if(getVector(soldierV, playerV) > soldier.getPlayer().getRadius()) {
+        if(getVector(soldierV, playerV) > soldier.getPlayer().getRadius() - 2f) {
             return new Vector2(playerV.x - soldierV.x, playerV.y - soldierV.y);
         }
 

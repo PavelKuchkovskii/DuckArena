@@ -29,7 +29,7 @@ public class BattleRenderer implements IRenderer {
         this.world = world;
         this.camera = new OrthographicCamera(100, 100 * ((float) Gdx.graphics.getHeight()/Gdx.graphics.getWidth()));
         this.camera.position.set(camera.viewportWidth/2f, camera.viewportHeight/2f, 0);
-        //camera.zoom +=5;
+        //camera.zoom += 3;
 
         this.exp = new BitmapFont();
         this.exp.getData().setScale(0.2f);
@@ -46,7 +46,8 @@ public class BattleRenderer implements IRenderer {
 
         camera.update();
 
-        camera.zoom = 1 + ((world.getPlayer().getRadius()/4f) - 1)/25f;
+        //4f - начальный размер радиуса
+        //camera.zoom = 1 + ((world.getPlayer().getRadius()/4f) - 1)/25f;
 
         batch.setProjectionMatrix(camera.combined);
 

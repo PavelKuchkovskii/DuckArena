@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.WorldManifold;
 
 import org.dayaway.duckarena.model.Bang;
+import org.dayaway.duckarena.model.Barrel;
 import org.dayaway.duckarena.model.api.ISoldier;
 import org.dayaway.duckarena.model.api.IWorld;
 
@@ -31,40 +32,10 @@ public class CustomListener implements ContactListener {
                 world.addToDestroy(contact.getFixtureB().getBody());
             }
 
-            //С ДРУГИМИ СОЛДАТАМИ
-            else if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("soldier")
-            && !contact.getFixtureA().getUserData().equals(contact.getFixtureB().getUserData())) {
-                //Уничтожаем солдата
-                world.addToDestroy(contact.getFixtureA().getBody());
-                world.addToDestroy(contact.getFixtureB().getBody());
-
-                //Добавляем анимацию взрыва на оюоих солдат
-                world.addBang(new Bang(contact.getFixtureA().getBody().getPosition()));
-                world.addBang(new Bang(contact.getFixtureB().getBody().getPosition()));
-            }
-
-            //С ЛЮБЫМИ ловушками
-            else if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("trap")) {
-                //Уничтожаем солдата
-                world.addToDestroy(contact.getFixtureA().getBody());
-                world.addBang(new Bang(contact.getFixtureA().getBody().getPosition()));
-            }
-        }
-
-        //Если ЛЮБАЯ ловушка сталкивается
-        else if(contact.getFixtureA().getUserData() != null && ((String) contact.getFixtureA().getUserData()).contains("trap")) {
-            //С СОЛДАТАМИ
-            if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("soldier")) {
-                //Уничтожаем солдата
-                world.addToDestroy(contact.getFixtureB().getBody());
-                //Добавляем анимацию взрыва
-                world.addBang(new Bang(contact.getFixtureB().getBody().getPosition()));
-            }
-
-            //С КРИСТАЛЛАМИ
-            else if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("crystal") && !contact.getFixtureA().getUserData().equals("trap_edge")) {
-                //Добавляем кристал в список на уничтожение
-                world.addToDestroy(contact.getFixtureB().getBody());
+            //С Радиусом бочки
+            else if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("barrel_radius")) {
+                //Добавляем солдата в радиус взрыва
+                ((Barrel) contact.getFixtureB().getBody().getUserData()).addSoldier((ISoldier) contact.getFixtureA().getBody().getUserData());
             }
         }
 
@@ -77,16 +48,59 @@ public class CustomListener implements ContactListener {
                 //Добавляем кристал в список на уничтожение
                 world.addToDestroy(contact.getFixtureA().getBody());
             }
-            //С ЛЮБОЙ ловушкой
-            else if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("trap") && !contact.getFixtureB().getUserData().equals("trap_edge")) {
+        }
+
+        //Если ЛЮБАЯ ловушка сталкивается
+        else if(contact.getFixtureA().getUserData() != null && ((String) contact.getFixtureA().getUserData()).contains("trap")) {
+            //С КРИСТАЛЛАМИ
+            if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("crystal") && !contact.getFixtureA().getUserData().equals("trap_edge")) {
                 //Добавляем кристал в список на уничтожение
-                world.addToDestroy(contact.getFixtureA().getBody());
+                world.addToDestroy(contact.getFixtureB().getBody());
             }
         }
+
+        //Если радиус бочки сталкивается
+        else if(contact.getFixtureA().getUserData() != null && contact.getFixtureA().getUserData().equals("barrel_radius")) {
+            //С СОЛДАТАМИ
+            if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("soldier")) {
+                //Добавляем солдата в радиус взрыва
+                ((Barrel) contact.getFixtureA().getBody().getUserData()).addSoldier((ISoldier) contact.getFixtureB().getBody().getUserData());
+            }
+        }
+
+
+
     }
 
     @Override
     public void endContact(Contact contact) {
+
+        //Если солдат перестает сталкиваеться
+        if(contact.getFixtureA().getUserData() != null && ((String) contact.getFixtureA().getUserData()).contains("soldier")) {
+            //С Радиусом бочки
+            if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("barrel_radius")) {
+                //Удаляем солдата из радиуса взрыва
+                ((Barrel) contact.getFixtureB().getBody().getUserData()).removeSoldier((ISoldier) contact.getFixtureA().getBody().getUserData());
+            }
+        }
+
+        //Если радиус взрыва перестает соприкосаться с солдатом
+        else if(contact.getFixtureA().getUserData() != null && contact.getFixtureA().getUserData().equals("barrel_radius")) {
+            //С СОЛДАТАМИ
+            if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("soldier")) {
+                //Удаляем солдата из радиуса взрыва
+                ((Barrel) contact.getFixtureA().getBody().getUserData()).removeSoldier((ISoldier) contact.getFixtureB().getBody().getUserData());
+            }
+        }
+
+        //Если бочка перестает соприкосаться
+        else if(contact.getFixtureA().getUserData() != null && contact.getFixtureA().getUserData().equals("barrel")) {
+            //с Шаром
+            if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("trap_circle")) {
+                world.addToDestroy(contact.getFixtureA().getBody());
+                world.addBang(new Bang(contact.getFixtureA().getBody().getPosition(), 50 ,50));
+            }
+        }
     }
 
     @Override
@@ -108,6 +122,78 @@ public class CustomListener implements ContactListener {
                             //Отключаем этот контакт
                             contact.setEnabled(false);
                         }
+                    }
+                }
+
+                //Если солдат сталкивается
+                else if(contact.getFixtureA().getUserData() != null && ((String) contact.getFixtureA().getUserData()).contains("soldier")) {
+
+                    if(contact.getFixtureA().getUserData().equals(world.getPlayer() + "soldier")) {
+                        contact.setEnabled(false);
+                    }
+                    //С ДРУГИМИ СОЛДАТАМИ
+                    else if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("soldier")
+                            && !contact.getFixtureA().getUserData().equals(contact.getFixtureB().getUserData())) {
+                        contact.setEnabled(false);
+                        //Уничтожаем солдата
+                        world.addToDestroy(contact.getFixtureA().getBody());
+                        world.addToDestroy(contact.getFixtureB().getBody());
+
+                        //Добавляем анимацию взрыва на оюоих солдат
+                        world.addBang(new Bang(contact.getFixtureA().getBody().getPosition(), 7,7));
+                        world.addBang(new Bang(contact.getFixtureB().getBody().getPosition(), 7, 7));
+                    }
+                }
+
+                //Если ЛЮБАЯ ловушка сталкивается
+                else if(contact.getFixtureA().getUserData() != null && ((String) contact.getFixtureA().getUserData()).contains("trap")) {
+                    if(contact.getFixtureB().getUserData().equals(world.getPlayer() + "soldier")) {
+                        contact.setEnabled(false);
+                    }
+
+                    //С СОЛДАТАМИ
+                    else if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("soldier")) {
+                        contact.setEnabled(false);
+                        //Уничтожаем солдата
+                        world.addToDestroy(contact.getFixtureB().getBody());
+                        //Добавляем анимацию взрыва
+                        world.addBang(new Bang(contact.getFixtureB().getBody().getPosition(), 7, 7));
+                    }
+
+                    //С бочками и это не шар
+                    else if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("barrel")  && !contact.getFixtureA().getUserData().equals("trap_circle")) {
+                        contact.setEnabled(false);
+                        world.addToDestroy(contact.getFixtureB().getBody());
+                    }
+
+                }
+
+                //Если бочка сталкивается
+                else if(contact.getFixtureA().getUserData() != null && contact.getFixtureA().getUserData().equals("barrel")) {
+                    //С центрами масс
+                    if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("player") || contact.getFixtureB().getUserData().equals("bot")) {
+                        contact.setEnabled(false);
+                    }
+
+                    //С солдатами
+                    else if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("soldier")) {
+
+                        //ACTIVATE BARREL
+                        world.addToDestroy(contact.getFixtureA().getBody());
+                        world.addBang(new Bang(contact.getFixtureA().getBody().getPosition(), 50 ,50));
+
+                        for (ISoldier soldier : ((Barrel) contact.getFixtureA().getBody().getUserData()).getSoldiers()) {
+                            world.addToDestroy(soldier.getBody());
+
+                            world.addBang(new Bang(soldier.getPosition(), 7 ,7));
+                        }
+
+                    }
+
+                    //С ловушками и это не шар
+                    else if(contact.getFixtureB().getUserData() != null && ((String) contact.getFixtureB().getUserData()).contains("trap") && !contact.getFixtureB().getUserData().equals("trap_circle")) {
+                        contact.setEnabled(false);
+                        world.addToDestroy(contact.getFixtureA().getBody());
                     }
                 }
             }

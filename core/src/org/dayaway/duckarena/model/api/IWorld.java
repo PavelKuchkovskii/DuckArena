@@ -3,6 +3,7 @@ package org.dayaway.duckarena.model.api;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 
+import org.dayaway.duckarena.model.Barrel;
 import org.dayaway.duckarena.model.Bot;
 import org.dayaway.duckarena.model.CircleKiller;
 import org.dayaway.duckarena.model.Crystal;
@@ -52,4 +53,8 @@ public interface IWorld {
     List<IBang> getBangs();
 
     void addBang(IBang bang);
+
+    void createBarrel();
+
+    List<Barrel> getBarrels();
 }

@@ -80,8 +80,13 @@ public class BattleWorld implements IWorld {
 
         createMap();
 
+        create();
+
         createPlayer();
 
+        for (int i = 0; i < 20; i++) {
+            createBarrel();
+        }
 
         for (int i = 0; i < 3; i++) {
             createBot();
@@ -101,11 +106,6 @@ public class BattleWorld implements IWorld {
             createCrystal(player.getPosition().x, player.getPosition().y, 250f);
         }
 
-        for (int i = 0; i < 10; i++) {
-            createBarrel();
-        }
-
-        create();
     }
 
     public void createPlayer() {
@@ -522,6 +522,14 @@ public class BattleWorld implements IWorld {
         //Присваем его физическому телу
         barrelBody.setUserData(barrel);
 
+        // Create a polygon shape
+        PolygonShape groundBox = new PolygonShape();
+        // Set the polygon shape as a box which is twice the size of our view port and 20 high
+        // (setAsBox takes half-width and half-height as arguments)
+        groundBox.setAsBox(4f, 5f);
+        // Create a fixture from our polygon shape and add it to our ground body
+        barrelBody.createFixture(groundBox, 0.0f).setUserData("barrel");
+
         CircleShape circle = new CircleShape();
         circle.setRadius(25f);
 
@@ -534,13 +542,7 @@ public class BattleWorld implements IWorld {
 
         barrelBody.createFixture(fixtureDef).setUserData("barrel_radius");
 
-        // Create a polygon shape
-        PolygonShape groundBox = new PolygonShape();
-        // Set the polygon shape as a box which is twice the size of our view port and 20 high
-        // (setAsBox takes half-width and half-height as arguments)
-        groundBox.setAsBox(4f, 5f);
-        // Create a fixture from our polygon shape and add it to our ground body
-        barrelBody.createFixture(groundBox, 0.0f).setUserData("barrel");
+
 
         circle.dispose();
     }
@@ -616,6 +618,11 @@ public class BattleWorld implements IWorld {
     @Override
     public void addBang(IBang bang) {
         this.bangs.add(bang);
+    }
+
+    @Override
+    public List<Barrel> getBarrels() {
+        return this.barrels;
     }
 
     @Override

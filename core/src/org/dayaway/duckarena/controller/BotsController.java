@@ -3,6 +3,7 @@ package org.dayaway.duckarena.controller;
 import com.badlogic.gdx.math.Vector2;
 
 import org.dayaway.duckarena.controller.api.IController;
+import org.dayaway.duckarena.model.Barrel;
 import org.dayaway.duckarena.model.Bot;
 import org.dayaway.duckarena.model.CircleKiller;
 import org.dayaway.duckarena.model.Crystal;
@@ -41,8 +42,6 @@ public class BotsController {
 
             updateChanges(bot);
         }
-
-
     }
 
     //Проверяем набрал ли Bot достаточно опыта и если да, переводим на след уровень
@@ -76,10 +75,11 @@ public class BotsController {
             v1 = cohesion(bot);
             v2 = rule2(bot);
 
-            float x = bot.getBody().getLinearVelocity().x + v1.x + v2.x;
-            float y = bot.getBody().getLinearVelocity().y + v1.y + v2.y;
+            float x = v1.x + v2.x;
+            float y = v1.y + v2.y;
 
-            bot.getBody().setLinearVelocity(correctionVelocity(x,y));
+            //bot.getBody().setLinearVelocity(correctionVelocity(x,y));
+            bot.getBody().setLinearVelocity(x,y);
         }
         else {
             bot.getBody().setLinearVelocity(0,0);
@@ -92,6 +92,78 @@ public class BotsController {
         Vector2 goalV = bot.getGoal().getPosition();
 
         return new Vector2(goalV.x - botV.x, goalV.y - botV.y);
+    }
+
+    //Меняем направление движения в зависимости от наличия опасных мест
+    private Vector2 rule2(Bot bot) {
+        Vector2 c = new Vector2(0,0);
+
+        for (ITrapRevolute trap : world.getTraps()) {
+            if(getVector(bot.getPosition(), trap.getPosition()) < bot.getRadius() + trap.getWidth()/2f + 10) {
+
+                /*if(bot.getPosition().x < trap.getPosition().x) {
+                    c.x -= 2000;
+                }
+                else {
+                    c.x += 2000;
+                }
+
+                if(bot.getPosition().y < trap.getPosition().y) {
+                    c.y -= 2000;
+                }
+                else {
+                    c.y += 2000;
+                }*/
+
+                c.x = bot.getPosition().x - trap.getPosition().x;
+                c.y = bot.getPosition().y - trap.getPosition().y;
+            }
+
+        }
+        for (CircleKiller trap : world.getCircleTraps()) {
+            if(getVector(bot.getPosition(), trap.getPosition()) < bot.getRadius() + trap.getWidth()/2f + 10) {
+
+                /*if(bot.getPosition().x < trap.getPosition().x) {
+                    c.x -= 2000;
+                }
+                else {
+                    c.x += 2000;
+                }
+
+                if(bot.getPosition().y < trap.getPosition().y) {
+                    c.y -= 2000;
+                }
+                else {
+                    c.y += 2000;
+                }*/
+
+                c.x = bot.getPosition().x - trap.getPosition().x;
+                c.y = bot.getPosition().y - trap.getPosition().y;
+            }
+        }
+
+        for (Barrel barrel : world.getBarrels()) {
+            if(getVector(bot.getPosition(), barrel.getPosition()) < bot.getRadius() + barrel.getWidth()/2f + 10) {
+
+                /*if(bot.getPosition().x < trap.getPosition().x) {
+                    c.x -= 2000;
+                }
+                else {
+                    c.x += 2000;
+                }
+
+                if(bot.getPosition().y < trap.getPosition().y) {
+                    c.y -= 2000;
+                }
+                else {
+                    c.y += 2000;
+                }*/
+
+                c.x = bot.getPosition().x - barrel.getPosition().x;
+                c.y = bot.getPosition().y - barrel.getPosition().y;
+            }
+        }
+        return c;
     }
 
     //Корректируем скорость центра масс ботов, делаем их равными скорости плеера
@@ -126,56 +198,6 @@ public class BotsController {
 
         return new Vector2(x1, y1);
 
-    }
-
-    //Меняем направление движения в зависимости от наличия опасных мест
-    private Vector2 rule2(Bot bot) {
-        Vector2 c = new Vector2(0,0);
-
-        for (ITrapRevolute trap : world.getTraps()) {
-            if(getVector(bot.getPosition(), trap.getPosition()) < 60) {
-
-                /*if(bot.getPosition().x < trap.getPosition().x) {
-                    c.x -= 2000;
-                }
-                else {
-                    c.x += 2000;
-                }
-
-                if(bot.getPosition().y < trap.getPosition().y) {
-                    c.y -= 2000;
-                }
-                else {
-                    c.y += 2000;
-                }*/
-
-                c.x = bot.getPosition().x - trap.getPosition().x;
-                c.y = bot.getPosition().y - trap.getPosition().y;
-            }
-
-        }
-        for (CircleKiller trap : world.getCircleTraps()) {
-            if(getVector(bot.getPosition(), trap.getPosition()) < 50) {
-
-                /*if(bot.getPosition().x < trap.getPosition().x) {
-                    c.x -= 2000;
-                }
-                else {
-                    c.x += 2000;
-                }
-
-                if(bot.getPosition().y < trap.getPosition().y) {
-                    c.y -= 2000;
-                }
-                else {
-                    c.y += 2000;
-                }*/
-
-                c.x = bot.getPosition().x - trap.getPosition().x;
-                c.y = bot.getPosition().y - trap.getPosition().y;
-            }
-        }
-        return c;
     }
 
     private void decide(Bot bot) {

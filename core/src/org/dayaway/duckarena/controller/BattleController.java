@@ -17,6 +17,7 @@ public class BattleController implements IController {
     private final PlayerController playerController;
     private final SoldiersController soldiersController;
     private final CrystalsController crystalsController;
+    private final BarrelsController barrelsController;
 
     private final BotsController botsController;
 
@@ -40,6 +41,7 @@ public class BattleController implements IController {
         this.playerController = new PlayerController(world);
         this.soldiersController = new SoldiersController(world);
         this.crystalsController = new CrystalsController(world);
+        this.barrelsController = new BarrelsController(world);
 
         this.botsController = new BotsController(this);
 
@@ -64,6 +66,8 @@ public class BattleController implements IController {
         soldiersController.update(dt);
 
         crystalsController.update(dt);
+
+        barrelsController.update(dt);
 
         botsController.update(dt);
 
