@@ -5,16 +5,17 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
 import org.dayaway.duckarena.model.api.IActor;
+import org.dayaway.duckarena.model.api.IObstacle;
 
-public class CircleKiller implements IActor {
+public class CircleKiller implements IActor, IObstacle {
 
 
     private final Body body;
     private final TextureRegion textureRegion;
     private TextureRegion frame;
 
-    private final int WIDTH = 40;
-    private final int HEIGHT = 40;
+    private final float WIDTH = 40;
+    private final float HEIGHT = 40;
 
     public CircleKiller(Body body, TextureRegion textureRegion) {
         this.body = body;
@@ -42,12 +43,12 @@ public class CircleKiller implements IActor {
     }
 
     @Override
-    public int getWidth() {
+    public float getWidth() {
         return this.WIDTH;
     }
 
     @Override
-    public int getHeight() {
+    public float getHeight() {
         return this.HEIGHT;
     }
 

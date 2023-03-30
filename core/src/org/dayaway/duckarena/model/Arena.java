@@ -7,8 +7,8 @@ import com.badlogic.gdx.physics.box2d.Body;
 import org.dayaway.duckarena.model.api.IActor;
 
 public class Arena implements IActor {
-    private final int WIDTH = 975;
-    private final int HEIGHT = 975;
+    private final float WIDTH = 975;
+    private final float HEIGHT = 975;
 
     private final Body body;
     private final TextureRegion textureRegion;
@@ -40,12 +40,12 @@ public class Arena implements IActor {
     }
 
     @Override
-    public int getWidth() {
+    public float getWidth() {
         return this.WIDTH;
     }
 
     @Override
-    public int getHeight() {
+    public float getHeight() {
         return this.HEIGHT;
     }
 

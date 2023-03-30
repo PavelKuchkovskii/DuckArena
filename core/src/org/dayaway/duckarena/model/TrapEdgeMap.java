@@ -5,15 +5,16 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 
+import org.dayaway.duckarena.model.api.IObstacle;
 import org.dayaway.duckarena.model.api.ITrapRevolute;
 
-public class TrapEdgeMap implements ITrapRevolute {
+public class TrapEdgeMap implements ITrapRevolute, IObstacle {
 
     private final RevoluteJoint joint;
     private final TextureRegion textureRegion;
 
-    private final int WIDTH = 50;
-    private final int HEIGHT = 60;
+    private final float WIDTH = 50;
+    private final float HEIGHT = 60;
 
     public TrapEdgeMap(RevoluteJoint joint, TextureRegion region) {
         this.joint = joint;
@@ -40,12 +41,12 @@ public class TrapEdgeMap implements ITrapRevolute {
     }
 
     @Override
-    public int getWidth() {
+    public float getWidth() {
         return this.WIDTH;
     }
 
     @Override
-    public int getHeight() {
+    public float getHeight() {
         return this.HEIGHT;
     }
 

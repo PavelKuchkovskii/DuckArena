@@ -8,8 +8,8 @@ import org.dayaway.duckarena.model.api.IActor;
 
 public class Bridge implements IActor {
 
-    private final int WIDTH = 10;
-    private final int HEIGHT = 10;
+    private final float WIDTH = 10;
+    private final float HEIGHT = 10;
 
     private final Body body;
     private final TextureRegion textureRegion;
@@ -40,12 +40,12 @@ public class Bridge implements IActor {
     }
 
     @Override
-    public int getWidth() {
+    public float getWidth() {
         return this.WIDTH;
     }
 
     @Override
-    public int getHeight() {
+    public float getHeight() {
         return this.HEIGHT;
     }
 

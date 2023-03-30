@@ -27,8 +27,8 @@ public class Player implements IPlayer {
     private double experience;
     private Stack<ILevel> levels;
 
-    private final int WIDTH = 15;
-    private final int HEIGHT = 15;
+    private final float WIDTH = 15;
+    private final float HEIGHT = 15;
 
     private Body body;
 
@@ -51,12 +51,12 @@ public class Player implements IPlayer {
     }
 
     @Override
-    public int getWidth() {
+    public float getWidth() {
         return this.WIDTH;
     }
 
     @Override
-    public int getHeight() {
+    public float getHeight() {
         return this.HEIGHT;
     }
 

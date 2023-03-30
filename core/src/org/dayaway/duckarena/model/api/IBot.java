@@ -1,5 +1,8 @@
 package org.dayaway.duckarena.model.api;
 
+import com.badlogic.gdx.ai.steer.SteeringBehavior;
+import com.badlogic.gdx.math.Vector2;
+
 public interface IBot extends IPlayer{
 
     IActor getGoal();
@@ -12,4 +15,6 @@ public interface IBot extends IPlayer{
     boolean isDiscovered();
 
     void setDiscovered(boolean discovered);
+
+    SteeringBehavior<Vector2> getSteeringBehavior();
 }

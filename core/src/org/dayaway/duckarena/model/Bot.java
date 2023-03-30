@@ -1,5 +1,6 @@
 package org.dayaway.duckarena.model;
 
+import com.badlogic.gdx.ai.steer.SteeringBehavior;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -20,8 +21,8 @@ public class Bot implements IBot {
     private final Fixture fRadius;
 
     private final TextureRegion textureRegion;
-    private final int WIDTH = 15;
-    private final int HEIGHT = 15;
+    private final float WIDTH = 15;
+    private final float HEIGHT = 15;
     private Body body;
 
     private final Vector2 velocity;
@@ -37,6 +38,8 @@ public class Bot implements IBot {
     private Long timeStartGoal;
 
     private final List<Soldier> soldiers;
+
+    private SteeringBehavior<Vector2> steeringBehavior;
 
     public Bot(String nickName, Fixture fRadius, Body body, TextureRegion textureRegion) {
         this.nickName = nickName;
@@ -55,12 +58,12 @@ public class Bot implements IBot {
     }
 
     @Override
-    public int getWidth() {
+    public float getWidth() {
         return this.WIDTH;
     }
 
     @Override
-    public int getHeight() {
+    public float getHeight() {
         return this.HEIGHT;
     }
 
@@ -196,5 +199,10 @@ public class Bot implements IBot {
     @Override
     public void setDiscovered(boolean discovered) {
         this.discovered = discovered;
+    }
+
+    @Override
+    public SteeringBehavior<Vector2> getSteeringBehavior() {
+        return this.steeringBehavior;
     }
 }

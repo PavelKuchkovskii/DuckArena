@@ -12,8 +12,8 @@ public class Tower implements ITower {
     private final TextureRegion texturePeace;
     private TextureRegion frame;
 
-    private final int WIDTH = 40;
-    private final int HEIGHT = 40;
+    private final float WIDTH = 40;
+    private final float HEIGHT = 40;
 
     public Tower(Body body, TextureRegion texturePeace) {
         this.body = body;
@@ -41,12 +41,12 @@ public class Tower implements ITower {
     }
 
     @Override
-    public int getWidth() {
+    public float getWidth() {
         return this.WIDTH;
     }
 
     @Override
-    public int getHeight() {
+    public float getHeight() {
         return this.HEIGHT;
     }
 

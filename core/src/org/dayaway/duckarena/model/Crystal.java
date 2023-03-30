@@ -8,8 +8,8 @@ import org.dayaway.duckarena.model.api.IActor;
 
 public class Crystal implements IActor {
 
-    private final int WIDTH = 3;
-    private final int HEIGHT = 3;
+    private final float WIDTH = 3;
+    private final float HEIGHT = 3;
 
     private final Body body;
     private final TextureRegion textureRegion;
@@ -44,12 +44,12 @@ public class Crystal implements IActor {
     }
 
     @Override
-    public int getWidth() {
+    public float getWidth() {
         return this.WIDTH;
     }
 
     @Override
-    public int getHeight() {
+    public float getHeight() {
         return this.HEIGHT;
     }
 

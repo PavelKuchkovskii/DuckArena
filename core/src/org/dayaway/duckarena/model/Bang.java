@@ -10,8 +10,8 @@ import org.dayaway.duckarena.screens.BattleScreen;
 
 public class Bang implements IBang {
 
-    private final int WIDTH;
-    private final int HEIGHT;
+    private final float WIDTH;
+    private final float HEIGHT;
 
     private final TextureRegion textureRegion;
     private final Vector2 position;
@@ -21,7 +21,7 @@ public class Bang implements IBang {
     public Bang(Vector2 position, int width, int height) {
         this.position = new Vector2(position);
         this.textureRegion = BattleScreen.textures.getRandomBang();
-        this.animation = new BangsAnimation(5, 0.5f, textureRegion);
+        this.animation = new BangsAnimation(9, 0.5f, textureRegion);
         this.WIDTH = width;
         this.HEIGHT = height;
     }
@@ -47,12 +47,12 @@ public class Bang implements IBang {
     }
 
     @Override
-    public int getWidth() {
+    public float getWidth() {
         return this.WIDTH;
     }
 
     @Override
-    public int getHeight() {
+    public float getHeight() {
         return this.HEIGHT;
     }
 

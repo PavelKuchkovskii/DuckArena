@@ -15,9 +15,9 @@ public interface IActor {
 
     void setFrame(TextureRegion frame);
 
-    int getWidth();
+    float getWidth();
 
-    int getHeight();
+    float getHeight();
 
     Vector2 getPosition();
 }

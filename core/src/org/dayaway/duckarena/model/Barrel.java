@@ -5,16 +5,17 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
 import org.dayaway.duckarena.model.api.IBarrel;
+import org.dayaway.duckarena.model.api.IObstacle;
 import org.dayaway.duckarena.model.api.ISoldier;
 
 import java.util.HashSet;
 import java.util.Set;
 
 
-public class Barrel implements IBarrel {
+public class Barrel implements IBarrel, IObstacle {
 
-    private final int WIDTH = 10;
-    private final int HEIGHT = 10;
+    private final float WIDTH = 10;
+    private final float HEIGHT = 10;
 
     private final Body body;
     private final TextureRegion textureRegion;
@@ -50,12 +51,12 @@ public class Barrel implements IBarrel {
 
     }
     @Override
-    public int getWidth() {
+    public float getWidth() {
         return this.WIDTH;
     }
 
     @Override
-    public int getHeight() {
+    public float getHeight() {
         return this.HEIGHT;
     }
 

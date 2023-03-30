@@ -11,8 +11,8 @@ public class Soldier implements ISoldier {
 
     private final IPlayer player;
 
-    private final int WIDTH = 7;
-    private final int HEIGHT = 7;
+    private final float WIDTH = 7;
+    private final float HEIGHT = 7;
 
     private final Body body;
     private final TextureRegion texture;
@@ -41,12 +41,12 @@ public class Soldier implements ISoldier {
     }
 
     @Override
-    public int getWidth() {
+    public float getWidth() {
         return this.WIDTH;
     }
 
     @Override
-    public int getHeight() {
+    public float getHeight() {
         return this.HEIGHT;
     }
 

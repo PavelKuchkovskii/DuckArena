@@ -16,7 +16,7 @@ public class TexturesBattleScreen {
     public final TextureRegion crystal = new TextureRegion(new Texture("crystal.png"));
     public final TextureRegion trap = new TextureRegion(new Texture("trap_adg_map.png"));
     public final TextureRegion trap_cross = new TextureRegion(new Texture("trap_cross.png"));
-    public final TextureRegion bang = new TextureRegion(new Texture("bang.png"));
+    public final TextureRegion bang = new TextureRegion(new Texture("new_bang.png"));
     public final TextureRegion barrel = new TextureRegion(new Texture("barrel.png"));
 
     public TexturesBattleScreen() {
@@ -57,6 +57,7 @@ public class TexturesBattleScreen {
     }
 
     public TextureRegion getRandomBang() {
-        return bangs[random.nextInt(6)];
+        //return bangs[random.nextInt(6)];
+        return bang;
     }
 }
